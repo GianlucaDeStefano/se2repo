@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "se2"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  title: "is21"
+  description: this is a simple API for the IS2 course.
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
