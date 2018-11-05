@@ -1,0 +1,27 @@
+{
+  "name": "is2",
+  "version": "1.0.0",
+  "description": "application for the is2 course by the apivorousapi group ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GianlucaDeStefano/se2repo.git"
+  },
+  "keywords": [
+    "app",
+    "software",
+    "is2"
+  ],
+  "author": "apivorousteam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GianlucaDeStefano/se2repo/issues"
+  },
+  "homepage": "https://github.com/GianlucaDeStefano/se2repo#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
