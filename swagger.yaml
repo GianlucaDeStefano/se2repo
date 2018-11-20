@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   version: '1.0'
   title: "is21"
-  description: this is a simple API for the IS2 course.
+  description: api for managing exams and students
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
@@ -279,11 +279,22 @@ paths:
         404:
           description: 'Exam not found'
 
-
-##########################################################################################################
-#credo che questa parte vada in conflitto con /exams/{exam_id}
-#il parametro è sempre un integer ma in un caso ha una semantica relativa all'esame, nell'altro relativa a chi lo ha creato
-  /exams/{ownerId}:
+  /exam/{exam_id}/reviews:
+    get:
+      summary: 'List reviews of exam'
+      description: 'List reviews of an exam by id'
+      parameters:
+        - name: exam_id
+          required: true
+          in: path
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ArrayOfReviews'
+            
+  /exams/{ownerId}/owner:
     get:
       summary: 'List exams created by ownerId'
       description: 'List exams created by ownerId'
@@ -297,26 +308,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ArrayOfExams'
-##########################################################################################################
-
-  /exam/{examId}/mark:
-    post:
-      summary: 'Give exam a mark'
-      description: 'Give a mark to an exam'
-      parameters:
-        - name: examId
-          required: true
-          in: path
-          type: integer
-        - name: mark
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/Mark'
-      responses:
-        200:
-          description: OK
-
 
   /reviews:
     post:
@@ -333,13 +324,13 @@ paths:
           description: OK
         400:
           description: "Exam id or task id not found"
-
-  /review/{exam_id}:
+  
+  /review/{reviews_id}:
     get:
-      summary: 'List reviews of exam'
-      description: 'List reviews of an exam by id'
+      summary: 'Get review data'
+      description: 'Get the review data'
       parameters:
-        - name: exam_id
+        - name: reviews_id
           required: true
           in: path
           type: integer
@@ -347,7 +338,37 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/ArrayOfReviews'
+            $ref: '#/definitions/Review'
+    put: 
+      summary: 'Change review data'
+      description: 'Change the review data'
+      parameters:
+        - name: reviews_id
+          required: true
+          in: path
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Review'
+        401:
+          description: 'Unauthorized' 
+    delete:
+      summary: 'Delete review'
+      description: 'Delete the review'
+      parameters:
+        - name: reviews_id
+          required: true
+          in: path
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Review'
+        401:
+          description: 'Unauthorized' 
   /group:
     post:
       summary: 'Create a group'
@@ -361,8 +382,43 @@ paths:
       responses:
         200:
           description: OK
-          
-  /group/{group_id}/addUser:
+  /group/{group_id}:
+    put:
+      summary: 'Update a group'
+      description: 'Update a group'
+      parameters:
+          - name: group_id
+            in: path
+            required: true
+            type: integer
+          - name: group
+            in: body
+            required: true
+            schema:
+              $ref: '#/definitions/Group'
+      responses:
+        200:
+          description: OK
+        400:
+          description: 'Group id not found'
+        401:
+          description: "You can't manage this group, noob"
+    delete:
+      summary: 'Delete a group'
+      description: 'Delete a group'
+      parameters:
+          - name: group_id
+            in: path
+            required: true
+            type: integer
+      responses:
+        200:
+          description: OK
+        400:
+          description: 'Group id not found'
+        401:
+          description: "You can't manage this group, noob"
+  /group/{group_id}/user:
     post:
       summary: 'Add user to group'
       description: 'Add an user to a group'
@@ -383,8 +439,28 @@ paths:
           description: 'Group id not found'
         401:
           description: "You can't join this group, noob"
+    delete:
+      summary: 'Remove user from group'
+      description: 'Remove user from the group'
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          type: integer
+        - name: userId
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Id'
+      responses:
+          200:
+            description: OK
+          400:
+            description: 'Params do not match'
+          401:
+            description: "You can't manage this group"
           
-  /group/{group_id}/addExam:
+  /group/{group_id}/exam:
     post:
       summary: 'Add exam to group'
       description: 'Add an exan to a group'
@@ -405,6 +481,110 @@ paths:
           description: 'Group id not found'
         401:
           description: "You can't join this group, noob"
+    delete:
+      summary: 'Remove exam from group'
+      description: 'Remove an exam from a group'
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          type: integer
+        - name: examId
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Id'
+      responses:
+        200:
+          description: OK
+        400:
+          description: 'Parameters do not match'
+        401:
+          description: "You can't manage this group"
+          
+  /submission:
+    post:
+      summary: 'Add a submission'
+      description: "Add a new submission"
+      parameters: 
+        - name: submission
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Submission'
+      responses:
+        200:
+          description: OK
+          
+  /submission/{submission_id}:
+    post: 
+      summary: 'See submission specification'
+      description: 'See the submission specification' 
+      parameters:
+        - name: submission_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: 'Submission not found'
+    delete: 
+      summary: 'Delete submission'
+      description: 'Delete the submission' 
+      parameters:
+        - name: submission_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: 'Submission not found'
+      
+  /submission/{submission_id}/mark:
+    post:
+      summary: 'Add vote to the submission'
+      description: 'Add a vote to the submission'
+      parameters: 
+        - name: submission_id
+          in: path 
+          required: true
+          type: integer
+        - name: mark
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Mark'
+      responses: 
+        200:
+          description: OK
+        401:
+          description: 'Unauthorized'
+        404: 
+          description: 'Submission not found'
+    put:
+      summary: 'Change submission mark'
+      description: 'Change the submission mark'
+      parameters:
+          - name: submission_id
+            in: path
+            required: true
+            type: integer
+          - name: mark
+            in: body
+            required: true
+            schema:
+              $ref: '#/definitions/Mark'
+      responses:
+        200:
+          description: 'Submission mark changed'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Submission not found'
 definitions:
   User:
     type: object
@@ -481,7 +661,7 @@ definitions:
         type: integer
       task_id:
         type: integer
-      exam_id:
+      submission_id:
         type: integer
       correct:
         type: boolean
@@ -503,6 +683,18 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Id'
+  Submission:
+    type: object
+    properties:
+      id:
+        type: integer 
+      user_id:
+        type: integer
+      exam_id:
+        type: integer
+      mark:
+        type: integer
+      
   Id:
     type: integer
 
