@@ -517,7 +517,7 @@ paths:
           description: OK
           
   /submission/{submission_id}:
-    post: 
+    get: 
       summary: 'See submission specification'
       description: 'See the submission specification' 
       parameters:
