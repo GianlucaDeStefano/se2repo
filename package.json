@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/GianlucaDeStefano/se2repo#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "node-fetch": "^2.3.0"
   }
 }
