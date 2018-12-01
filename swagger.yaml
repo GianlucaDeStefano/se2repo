@@ -28,14 +28,16 @@ paths:
       responses:
         201:
           description: 'User created successfully'
+          schema:
+            $ref: '#/definitions/UserData' # returns every user data without the psw
         400:
-          description: 'Username already present'
+          description: 'Error creating user'
   /users/login:
     post:
       description: 'Login as a user'
       summary: 'User login'
       parameters:
-        - name: credentials
+        - name: credentials #username and psw
           in: body
           required: true
           schema:
@@ -45,8 +47,11 @@ paths:
           description: 'Login successful'
           schema:
             $ref: '#/definitions/Token'
-        403:
+        401:
           description: 'Login failed, missing credentials'
+        403:
+          description: 'Unauthorized'
+
 
   /users/logout:
     post:
@@ -58,7 +63,6 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Token'
-      
       responses:
         200:
           description: 'Logged out'
@@ -77,10 +81,11 @@ paths:
       responses:
         200:
           description: 'OK'
+          schema:
+            $ref: '#/definitions/UserData' #User data without psw
         404:
           description: 'User not found'
-
-    put:
+    patch:
       summary: 'Change user info'
       description: 'Change user info by id (credentials needed)'
       parameters:
@@ -88,11 +93,11 @@ paths:
             in: path
             required: true
             type: integer
-        -   name: credentials
+        -   name: infos
             in: body
             required: true
             schema:
-              $ref: '#/definitions/Credentials'
+              $ref: '#/definitions/User'
       responses:
         200:
           description: 'User info changed'
@@ -100,7 +105,6 @@ paths:
           description: 'Invalid credentials'
         404:
           description: 'User not found'
-
     delete:
       summary: 'Delete an user'
       description: 'Delete an user by id (credentials needed)'
@@ -109,86 +113,14 @@ paths:
             in: path
             required: true
             type: integer
-
-        -   name: credentials
-            in: body
-            required: true
-            schema:
-              $ref: '#/definitions/Credentials'
       responses:
         204:
           description: 'User deleted'
         404:
           description: 'User not found'
+        401:
+          description: 'Unauthorized'
 
-  /tasks:
-    get:
-      summary: 'Get tasks'
-      description: 'Get the tasks list'
-      responses:
-        200:
-          description: 'OK'
-
-    post:
-      summary: 'Create task'
-      description: 'Create a task with answers'
-      parameters:
-        - name: task
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Task'
-      responses:
-        200:
-          description: OK
-
-  /tasks/{task_id}:
-    get:
-      summary: 'Get task info'
-      description: 'Get a task information by id'
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          type: integer
-      responses:
-        200:
-          description: 'OK'
-        404:
-          description: 'Task not found'
-
-    delete:
-      summary: 'Delete task'
-      description: 'Delete an existing task by id'
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          type: integer
-      responses:
-        204:
-          description: 'Task deleted'
-        404:
-          description: 'Task not found'
-          
-    patch:
-      summary: 'Update task info'
-      description: 'Update task info by id'
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          type: integer
-        - name: task_info
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Task'
-      responses:
-        200:
-          description: 'Task updated'
-        404:
-          description: 'Task not found'
   /exams:
     get:
       summary: 'Get exams list'
@@ -198,7 +130,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/ArrayOfExams'
-
+        204:
+          description: 'No exams'
     post:
       summary: 'Create exam'
       description: 'Create an exam with questions'
@@ -207,12 +140,16 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Exam'
+            $ref: '#/definitions/ExamData'
       responses:
-        200:
+        201:
           description: 'OK'
+          schema: 
+            $ref: '#/definitions/Exam'
+        204:
+          description: 'No exams'
         400:
-          description: "Exam id unavailable"
+          description: "Error creating exams"
 
   /exams/{exam_id}:
     get:
@@ -226,9 +163,10 @@ paths:
       responses:
         200:
           description: 'OK'
+          schema:
+            $ref: '#/definitions/Exam'
         404:
           description: 'Exam not found'
-          
     patch:
       summary: 'Update exam'
       description: 'Update exam tasks by id'
@@ -241,10 +179,12 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Exam'
+            $ref: '#/definitions/ExamData'
       responses:
         200:
           description: 'Exam updated'
+          schema:
+            $ref: '#/definitions/Exam'
         404:
           description: 'Exam not found'
           
@@ -276,30 +216,17 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/ArrayOfMarks'
+        401:
+          description: 'Unauthorized'
         404:
           description: 'Exam not found'
-
-  /exam/{exam_id}/reviews:
-    get:
-      summary: 'List reviews of exam'
-      description: 'List reviews of an exam by id'
-      parameters:
-        - name: exam_id
-          required: true
-          in: path
-          type: integer
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/ArrayOfReviews'
             
-  /exams/{ownerId}/owner:
+  /exams/{owner_id}/owner:
     get:
       summary: 'List exams created by ownerId'
       description: 'List exams created by ownerId'
       parameters:
-        - name: ownerId
+        - name: owner_id
           in: path
           required: true
           type: integer
@@ -308,7 +235,143 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ArrayOfExams'
+        204:
+          description: 'No exams'
+        404:
+          description: 'Owner not found'
+        401:
+          description: 'Unauthorized'
+        
+  /tasks:
+    get:
+      summary: 'Get tasks'
+      description: 'Get the tasks list'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/ArrayOfTasks'
+        204:
+          description: 'No content'
+    post:
+      summary: 'Create task'
+      description: 'Create a task with answers'
+      parameters:
+        - name: task
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaskData'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/Task'
+        400:
+          description: 'Error creating exam'
 
+  /tasks/{task_id}:
+    get:
+      summary: 'Get task info'
+      description: 'Get a task information by id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/Task'
+        404:
+          description: 'Task not found'
+          
+    delete:
+      summary: 'Delete task'
+      description: 'Delete an existing task by id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: 'Task deleted'
+        404:
+          description: 'Task not found'
+        401:
+          description: 'Unauthorized'
+          
+    patch:
+      summary: 'Update task info'
+      description: 'Update task info by id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+        - name: task_info
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaskData'
+      responses:
+        200:
+          description: 'Task updated'
+        404:
+          description: 'Task not found'
+        401:
+          description: 'Unauthorized'
+          
+  /tasks/{task_id}/answer:
+    get:
+      summary: 'get task answer'
+      description: 'get the task answer'
+      parameters: 
+        - name: task_id
+          in: path 
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+        204:
+          description: 'Answer not presents'
+        404:
+          description: 'Task not found'
+    put:
+      summary: 'add answer' 
+      description: 'add answer to the test'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+        - name: answer_data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaskData'
+      responses:
+        201:
+          description: 'Created'
+    patch:
+      summary: 'update answer' 
+      description: 'update answer of the test'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+        - name: answer_data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaskData'
+      responses:
+        200:
+          description: 'Updated'
   /reviews:
     post:
       summary: 'Create a review of a task'
@@ -318,19 +381,19 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Review'
+            $ref: '#/definitions/ReviewData'
       responses:
         200:
           description: OK
         400:
           description: "Exam id or task id not found"
   
-  /review/{reviews_id}:
+  /reviews/{review_id}:
     get:
       summary: 'Get review data'
       description: 'Get the review data'
       parameters:
-        - name: reviews_id
+        - name: review_id
           required: true
           in: path
           type: integer
@@ -339,37 +402,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/Review'
-    put: 
+        404:
+          description: 'Review not foud'
+    patch: 
       summary: 'Change review data'
       description: 'Change the review data'
       parameters:
-        - name: reviews_id
+        - name: review_id
           required: true
           in: path
           type: integer
       responses:
         200:
-          description: OK
-          schema:
-            $ref: '#/definitions/Review'
+          description: 'OK'
         401:
           description: 'Unauthorized' 
+        404:
+          description: 'Review not foud'
     delete:
       summary: 'Delete review'
       description: 'Delete the review'
       parameters:
-        - name: reviews_id
+        - name: review_id
           required: true
           in: path
           type: integer
       responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/Review'
+        204:
+          description: 'Deleted'
         401:
           description: 'Unauthorized' 
-  /group:
+  /groups:
     post:
       summary: 'Create a group'
       description: 'Create a group'
@@ -378,12 +441,17 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Group'
+            $ref: '#/definitions/GroupData'
       responses:
         200:
           description: OK
-  /group/{group_id}:
-    put:
+          schema:
+            $ref: '#/definitions/Group' 
+        400: 
+          description: 'Error creating group'
+          
+  /groups/{group_id}:
+    patch:
       summary: 'Update a group'
       description: 'Update a group'
       parameters:
@@ -395,14 +463,16 @@ paths:
             in: body
             required: true
             schema:
-              $ref: '#/definitions/Group'
+              $ref: '#/definitions/GroupData'
       responses:
         200:
           description: OK
-        400:
+        404:
           description: 'Group id not found'
         401:
-          description: "You can't manage this group, noob"
+          description: "You can't manage this group"
+        400:
+          description: 'Unable to update this group'
     delete:
       summary: 'Delete a group'
       description: 'Delete a group'
@@ -412,14 +482,14 @@ paths:
             required: true
             type: integer
       responses:
-        200:
+        204:
           description: OK
-        400:
+        404:
           description: 'Group id not found'
         401:
-          description: "You can't manage this group, noob"
-  /group/{group_id}/user:
-    post:
+          description: "You can't manage this group"
+  /groups/{group_id}/user:
+    put:
       summary: 'Add user to group'
       description: 'Add an user to a group'
       parameters:
@@ -427,18 +497,18 @@ paths:
           in: path
           required: true
           type: integer
-        - name: userId
+        - name: user_id
           in: body
           required: true
           schema:
             $ref: '#/definitions/Id'
       responses:
         200:
-          description: OK
-        400:
+          description: 'OK'
+        404:
           description: 'Group id not found'
         401:
-          description: "You can't join this group, noob"
+          description: "You manage this group"
     delete:
       summary: 'Remove user from group'
       description: 'Remove user from the group'
@@ -453,15 +523,15 @@ paths:
           schema:
             $ref: '#/definitions/Id'
       responses:
-          200:
+          204:
             description: OK
           400:
             description: 'Params do not match'
           401:
             description: "You can't manage this group"
           
-  /group/{group_id}/exam:
-    post:
+  /groups/{group_id}/exam:
+    put:
       summary: 'Add exam to group'
       description: 'Add an exan to a group'
       parameters:
@@ -469,7 +539,7 @@ paths:
           in: path
           required: true
           type: integer
-        - name: examId
+        - name: exam_id
           in: body
           required: true
           schema:
@@ -477,10 +547,10 @@ paths:
       responses:
         200:
           description: OK
-        400:
-          description: 'Group id not found'
+        404:
+          description: 'Group id or exam id not found'
         401:
-          description: "You can't join this group, noob"
+          description: "You can't manage this group"
     delete:
       summary: 'Remove exam from group'
       description: 'Remove an exam from a group'
@@ -489,20 +559,20 @@ paths:
           in: path
           required: true
           type: integer
-        - name: examId
+        - name: exam_id
           in: body
           required: true
           schema:
             $ref: '#/definitions/Id'
       responses:
-        200:
+        204:
           description: OK
         400:
           description: 'Parameters do not match'
         401:
           description: "You can't manage this group"
           
-  /submission:
+  /submissions:
     post:
       summary: 'Add a submission'
       description: "Add a new submission"
@@ -511,12 +581,16 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/Submission'
+            $ref: '#/definitions/SubmissionData'
       responses:
         200:
-          description: OK
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/Submission'
+        401:
+          description: 'Unathorized'
           
-  /submission/{submission_id}:
+  /submissions/{submission_id}:
     get: 
       summary: 'See submission specification'
       description: 'See the submission specification' 
@@ -527,7 +601,9 @@ paths:
           type: integer
       responses:
         200:
-          description: OK
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/Submission'
         404:
           description: 'Submission not found'
     delete: 
@@ -539,13 +615,15 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        204:
           description: OK
+        401:
+          description: 'Unathorized'
         404:
           description: 'Submission not found'
       
-  /submission/{submission_id}/mark:
-    post:
+  /submissions/{submission_id}/mark:
+    put:
       summary: 'Add vote to the submission'
       description: 'Add a vote to the submission'
       parameters: 
@@ -560,12 +638,12 @@ paths:
             $ref: '#/definitions/Mark'
       responses: 
         200:
-          description: OK
+          description: 'Mark added'
         401:
           description: 'Unauthorized'
         404: 
           description: 'Submission not found'
-    put:
+    patch:
       summary: 'Change submission mark'
       description: 'Change the submission mark'
       parameters:
@@ -589,12 +667,15 @@ definitions:
   User:
     type: object
     required:
+      - user_id
       - first_name
       - last_name
       - username
       - email
       - password
     properties:
+      user_id:
+        type: integer
       first_name:
         type: string
       last_name:
@@ -604,6 +685,25 @@ definitions:
       email:
         type: string
       password:
+        type: string
+  UserData:
+    type: object
+    required:
+      - user_id
+      - first_name
+      - last_name
+      - username
+      - email
+    properties:
+      user_id:
+        type: integer
+      first_name:
+        type: string
+      last_name:
+        type: string
+      username:
+        type: string
+      email:
         type: string
   Credentials:
     type: object
@@ -635,10 +735,22 @@ definitions:
       text:
         type: string
         example: 'Quanto fa 2+2?'
-      aswers:
-        type: array
-        items:
-          $ref: '#/definitions/Answer'
+      aswers_id:
+        type: integer
+        
+  TaskData:
+    type: object
+    properties:
+      owner_id:
+        type: integer
+      task_type:
+        enum: [SINGLE, MULTIPLE, OPEN]
+      text:
+        type: string
+        example: 'Quanto fa 2+2?'
+      aswers_id:
+        type: integer
+          
   Exam:
     type: object
     properties:
@@ -650,8 +762,15 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Task'
-      mark:
+  ExamData: #exam without the id (needed when creating the exam)
+    type: object
+    properties:
+      owner_id:
         type: integer
+      questions:
+        type: array
+        items:
+          $ref: '#/definitions/Task'
   Review:
     type: object
     properties:
@@ -659,20 +778,43 @@ definitions:
         type: integer
       owner_id:
         type: integer
+      submission_id:
+        type: integer
       task_id:
+        type: integer
+      comment:
+        type: string
+        example: "That is not the correct answer"
+  ReviewData:
+    type: object
+    properties:
+      owner_id:
         type: integer
       submission_id:
         type: integer
-      correct:
-        type: boolean
+      task_id:
+        type: integer
       comment:
         type: string
-        example: "Veramente hai segnato quella risposta??? WTF"
+        example: "That is not the correct answer"
   Group:
     type: object
     properties:
       id:
         type: integer
+      owner_id:
+        type: integer
+      exams:
+        type: array
+        items:
+          $ref: '#/definitions/Exam'
+      user_ids:
+        type: array
+        items:
+          $ref: '#/definitions/Id'
+  GroupData:
+    type: object
+    properties:
       owner_id:
         type: integer
       exams:
@@ -692,8 +834,22 @@ definitions:
         type: integer
       exam_id:
         type: integer
-      mark:
+      answer:
+        type: array
+        items:
+            $ref: '#/definitions/Answer'
+  SubmissionData:
+    type: object
+    properties:
+      user_id:
         type: integer
+      exam_id:
+        type: integer
+      answer:
+        type: array
+        items:
+            $ref: '#/definitions/Answer'
+
       
   Id:
     type: integer
@@ -714,7 +870,7 @@ definitions:
     items:
         $ref: '#/definitions/Exam'
         
-  ArrayOfReviews:
+  ArrayOfTasks:
     type: array
     items:
-        $ref: '#/definitions/Review'
+        $ref: '#/definitions/Task'
