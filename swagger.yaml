@@ -31,7 +31,7 @@ paths:
           schema:
             $ref: '#/definitions/UserData' # returns every user data without the psw
         400:
-          description: 'Error creating user'
+          description: 'Error creating user, missing or wrong data'
   /users/login:
     post:
       description: 'Login as a user'
@@ -50,7 +50,7 @@ paths:
         401:
           description: 'Login failed, missing credentials'
         403:
-          description: 'Unauthorized'
+          description: 'Unauthorized, wrong credentials'
 
 
   /users/logout:
@@ -64,7 +64,7 @@ paths:
           schema:
             $ref: '#/definitions/Token'
       responses:
-        200:
+        204:
           description: 'Logged out'
         400:
           description: 'Invalid token'
@@ -101,6 +101,8 @@ paths:
       responses:
         200:
           description: 'User info changed'
+          schema:
+            $ref: '#/definitions/UserData'
         403:
           description: 'Invalid credentials'
         404:
@@ -146,8 +148,6 @@ paths:
           description: 'OK'
           schema: 
             $ref: '#/definitions/Exam'
-        204:
-          description: 'No exams'
         400:
           description: "Error creating exams"
 
@@ -319,6 +319,8 @@ paths:
       responses:
         200:
           description: 'Task updated'
+          schema:
+            $ref: '#/definitions/TaskData'
         404:
           description: 'Task not found'
         401:
@@ -336,13 +338,15 @@ paths:
       responses:
         200:
           description: 'OK'
+          schema:
+            $ref: '#/definitions/Answer'
         204:
-          description: 'Answer not presents'
+          description: 'Answer not present'
         404:
           description: 'Task not found'
     put:
       summary: 'add answer' 
-      description: 'add answer to the test'
+      description: 'add answer to the task'
       parameters:
         - name: task_id
           in: path
@@ -356,6 +360,10 @@ paths:
       responses:
         201:
           description: 'Created'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Task not found'
     patch:
       summary: 'update answer' 
       description: 'update answer of the test'
@@ -372,6 +380,27 @@ paths:
       responses:
         200:
           description: 'Updated'
+          schema:
+            $ref: '#/definitions/TaskData'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Task not found'
+    delete:
+      summary: 'Delete an answer'
+      description: 'Delete a task answer by task id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        201:
+          description: 'Answer deleted successfully'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Task not found'
   /reviews:
     post:
       summary: 'Create a review of a task'
@@ -383,8 +412,8 @@ paths:
           schema:
             $ref: '#/definitions/ReviewData'
       responses:
-        200:
-          description: OK
+        201:
+          description: 'Review created successfully'
         400:
           description: "Exam id or task id not found"
   
@@ -403,7 +432,7 @@ paths:
           schema:
             $ref: '#/definitions/Review'
         404:
-          description: 'Review not foud'
+          description: 'Review not found'
     patch: 
       summary: 'Change review data'
       description: 'Change the review data'
@@ -414,11 +443,11 @@ paths:
           type: integer
       responses:
         200:
-          description: 'OK'
+          description: 'Review modified successfully'
         401:
           description: 'Unauthorized' 
         404:
-          description: 'Review not foud'
+          description: 'Review not found'
     delete:
       summary: 'Delete review'
       description: 'Delete the review'
