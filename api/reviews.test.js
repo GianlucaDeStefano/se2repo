@@ -1,16 +1,15 @@
-fetch = require('node-fetch');
+const fetch = require('node-fetch');
 const host = process.env.host || 'http://localhost:3000';
 const version = 'V1';
+const path = host; //= ${host}/${version}
 test("Test POST /reviews with right data", async () => {
 	let reviewTest = {
-	  "id": 3,
-	  "owner_id": 10,
-	  "task_id": 130,
-	  "submission_id": 200,
-	  "correct": false,
-	  "comment": "Ut ex"
+	  "owner_id": 1,
+	  "task_id": 1,
+	  "submission_id": 1,
+	  "comment": "Nice try bro"
 	};
-	let response = await fetch(`${host}/${version}/reviews`, {
+	let response = await fetch(`${path}/reviews`, {
 		method: 'POST',
 		body: JSON.stringify(reviewTest),
 		headers: {
@@ -18,17 +17,15 @@ test("Test POST /reviews with right data", async () => {
 		}
 	});
 	expect(response.status).toEqual(200);
-}
+});
 test("Test POST /reviews with wrong data type", async () => {
 	let reviewTest = {
-	  "id": "notaninteger",
 	  "owner_id": 10,
-	  "task_id": 130,
-	  "submission_id": 200,
-	  "correct": {},
+	  "task_id": "lol",
+	  "submission_id": "notaninteger",
 	  "comment": "Ut ex"
 	};
-	let response = await fetch(`${host}/${version}/reviews`, {
+	let response = await fetch(`${path}/reviews`, {
 		method: 'POST',
 		body: JSON.stringify(reviewTest),
 		headers: {
@@ -36,42 +33,42 @@ test("Test POST /reviews with wrong data type", async () => {
 		}
 	});
 	expect(response.status).toEqual(400);
-}
+});
 test("Test GET /reviews/{id} with right data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/23`);
+	let response = await fetch(`${path}/reviews/2`);
 	expect(response.status).toEqual(200);
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
-}
+	let obj = response.json();
+	expect(obj["id"]).toBeUndefined();
+});
 test("Test GET /reviews/{id} with wrong data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/asd`);
+	let response = await fetch(`${path}/reviews/asd`);
 	expect(response.status).toEqual(400);
-}
-test("Test PUT /reviews/{id} with right data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/23`,{
+});
+
+//PUT Request to redefine
+/*test("Test PUT /reviews/{id} with right data", async () => {
+	let response = await fetch(`${path}/reviews/23`,{
 		method: 'PUT',
 	});
 	expect(response.status).toEqual(200);
 	let obj = JSON.parse(response.text());
 	expect(obj).toIncludeKey('id');
-}
+});
 test("Test PUT /reviews/{id} with wrong data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/asd`,{
+	let response = await fetch(`${path}/reviews/asd`,{
 		method: 'PUT',
 	});
 	expect(response.status).toEqual(400);
-}
+});*/
 test("Test DELETE /reviews/{id} with right data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/23`,{
+	let response = await fetch(`${path}/reviews/1`,{
 		method: 'DELETE',
 	});
-	expect(response.status).toEqual(200);
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
-}
+	expect(response.status).toEqual(204);
+});
 test("Test DELETE /reviews/{id} with wrong data", async () => {
-	let response = await fetch(`${host}/${version}/reviews/asd`,{
+	let response = await fetch(`${path}/reviews/asd`,{
 		method: 'DELETE',
 	});
 	expect(response.status).toEqual(400);
-}
+});
