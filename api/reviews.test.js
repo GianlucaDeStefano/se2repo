@@ -2,6 +2,8 @@ const fetch = require('node-fetch');
 const host = process.env.host || 'http://localhost:3000';
 const version = 'V1';
 const path = host; //= ${host}/${version}
+var review = null;
+const test_comment = "not a common comment really";
 test("Test POST /reviews with right data", async () => {
 	let reviewTest = {
 	  "owner_id": 1,
@@ -17,6 +19,9 @@ test("Test POST /reviews with right data", async () => {
 		}
 	});
 	expect(response.status).toEqual(200);
+	review = await response.json();
+	expect(review["id"]).toBeDefined();
+	
 });
 test("Test POST /reviews with wrong data type", async () => {
 	let reviewTest = {
@@ -34,34 +39,46 @@ test("Test POST /reviews with wrong data type", async () => {
 	});
 	expect(response.status).toEqual(400);
 });
-test("Test GET /reviews/{id} with right data", async () => {
-	let response = await fetch(`${path}/reviews/2`);
+//PUT Request to redefine
+test("Test PATCH /reviews/{id} with right data", async () => {
+	expect(review["id"]).toBeDefined();
+	let response = await fetch(`${path}/reviews/`+review["id"],{
+		method: 'PATCH',
+		body: JSON.stringify({comment: test_comment}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
 	expect(response.status).toEqual(200);
-	let obj = response.json();
-	expect(obj["id"]).toBeUndefined();
+});
+test("Test PATCH /reviews/{id} with wrong data", async () => {
+	let response = await fetch(`${path}/reviews/asd`,{
+		method: 'PATCH',
+		body: JSON.stringify({comment: test_comment}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	expect(response.status).toEqual(400);
+});
+
+test("Test GET /reviews/{id} with right data", async () => {
+	expect(review["id"]).toBeDefined();
+	let response = await fetch(`${path}/reviews/`+review["id"]);
+	expect(response.status).toEqual(200);
+	let obj = await response.json();
+	expect(obj["id"]).toBeDefined();
+	expect(obj["comment"]).toEqual(test_comment);
 });
 test("Test GET /reviews/{id} with wrong data", async () => {
 	let response = await fetch(`${path}/reviews/asd`);
 	expect(response.status).toEqual(400);
 });
 
-//PUT Request to redefine
-/*test("Test PUT /reviews/{id} with right data", async () => {
-	let response = await fetch(`${path}/reviews/23`,{
-		method: 'PUT',
-	});
-	expect(response.status).toEqual(200);
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
-});
-test("Test PUT /reviews/{id} with wrong data", async () => {
-	let response = await fetch(`${path}/reviews/asd`,{
-		method: 'PUT',
-	});
-	expect(response.status).toEqual(400);
-});*/
+
 test("Test DELETE /reviews/{id} with right data", async () => {
-	let response = await fetch(`${path}/reviews/1`,{
+	expect(review["id"]).toBeDefined();
+	let response = await fetch(`${path}/reviews/`+review["id"],{
 		method: 'DELETE',
 	});
 	expect(response.status).toEqual(204);
