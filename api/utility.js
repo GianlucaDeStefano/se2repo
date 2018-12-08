@@ -17,6 +17,11 @@ function isInteger(x){
 function isArray(x){
 	return Array.isArray(x);
 }
+//return true if arg is a boolean 
+function isBoolean(x){
+	return (typeof x == typeof true);
+}
+
 //delete element (second arg) from array (first arg)
 function arrayDelete(array, el){
 	if (!isArray(array) || isNull(el)){
@@ -41,4 +46,4 @@ function log(tag, value){
 function json(obj){
 	return JSON.stringify(obj);
 }
-module.exports = {isString:isString, isNull:isNull, isInteger:isInteger, isArray:isArray, arrayDelete:arrayDelete, log: log, json : json};
+module.exports = {isString:isString, isNull:isNull, isInteger:isInteger, isArray:isArray, arrayDelete:arrayDelete, log: log, json : json, isBoolean: isBoolean};
