@@ -100,9 +100,10 @@ function review(id,ownerId,submissionId,taskId,reviewText){
 	}
 }
 
-function group(id,examsIds,userIds){
+function group(id,owner_id,examsIds,userIds){
 	return {
 	  "id": id,
+	  "owner_id": owner_id,
 	  "exam_ids": examsIds,
 	  "user_ids": userIds
 	}
