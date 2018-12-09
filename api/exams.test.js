@@ -1,4 +1,4 @@
-fetch = require('node-fetch');
+var fetch = require('node-fetch');
 
 var host = process.env.BASEURL || 'http://localhost:3000';
 var version = 'V1';
@@ -13,7 +13,7 @@ var path = host;
 */
 test("Test GET /exams", async () => {
 
-    let response = await fetch('${path}/exams',{
+    let response = await fetch(path + '/exams',{
         method: 'GET',
     });
     expect(response.status).toEqual(200);
@@ -64,7 +64,7 @@ test("Test POST /exams with correct data", async () => {
 		]
 	};
 
-	let response = await fetch('${path}/exams', {
+	let response = await fetch(path + '/exams', {
 		method: 'POST',
 		body: JSON.stringify(exam),
 		headers: {
@@ -72,10 +72,10 @@ test("Test POST /exams with correct data", async () => {
 		}
 	});
 
-	expect(response.status).toEqual(200);
+	expect(response.status).toEqual(201);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['exam_id']).toBeDefined();
 });
 
 /*
@@ -91,7 +91,7 @@ test("Test POST /exams with no tasks", async () => {
 		"questions": []
 	};
 
-	let response = await fetch('${path}/exams', {
+	let response = await fetch(path + '/exams', {
 		method: 'POST',
 		body: JSON.stringify(exam),
 		headers: {
@@ -112,14 +112,14 @@ test("Test GET /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 		method: 'GET'
 	});
 
 	expect(response.status).toBe(200);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['exam_id']).toBeDefined();
 });
 
 /*
@@ -132,7 +132,7 @@ test("Test GET /exams/{exam_id} with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 		method: 'GET'
 	});
 
@@ -145,7 +145,7 @@ test("Test GET /exams/{exam_id} with wrong exam_id", async () => {
 	- valid: yes
 	- description: trying to modify an existing exam
 */
-test("Test GET /exams/{exam_id} with right exam_id", async () => {
+test("Test PATCH /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 	//changed right answer from C to Python
@@ -155,50 +155,34 @@ test("Test GET /exams/{exam_id} with right exam_id", async () => {
 			{
 				"owner_id": 30,
 				"task_type": 'MULTIPLE',
-				"text": "The best programming language?",
-				"answers": [
-					{
-						"text": "C/C++",
-						"correct": false
-					},
-					{
-						"text": "Python",
-						"correct": true
-					},
-					{
-						"text": "Java",
-						"correct": false
-					}
-				]
+				"text": "The best programming language?"
 			},
 			{
 				"owner_id": 30,
 				"task_type": 'OPEN',
-				"text": "Why?",
-				"answers": []
+				"text": "Why?"
 			},
 			{
 				"owner_id": 30,
 				"task_type": 'OPEN',
-				"text": "Write down a Python server, you have 3 minutes.",
-				"answers": []
+				"text": "Write down a Python server, you have 3 minutes."
 			}
 		]
-	}
+	};
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(exam_update),
 		headers: {
-			'Content-type': 'application/json'
+			'Content-Type': 'application/json'
 		}
 	});
 
 	expect(response.status).toBe(200);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['exam_id']).toBeDefined();
 });
 
 /*
@@ -207,7 +191,7 @@ test("Test GET /exams/{exam_id} with right exam_id", async () => {
 	- valid: no
 	- description: trying to modify an unexisting exam
 */
-test("Test GET /exams/{exam_id} with right exam_id", async () => {
+test("Test PATCH /exams/{exam_id} with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 	//changed right answer from C to Python
@@ -248,18 +232,53 @@ test("Test GET /exams/{exam_id} with right exam_id", async () => {
 		]
 	}
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(exam_update),
 		headers: {
-			'Content-type': 'application/json'
+			'Content-Type': 'application/json'
 		}
 	});
 
 	expect(response.status).toBe(404);
 });
 
+/*
+- method: GET
+- path: /exams/{exam_id}/marks
+- valid: yes
+- description: trying to get the marks list of a single exam
+*/
+test("Test GET /exams/{exam_id}/marks with right exam_id", async () => {
+
+	let exam_id = 1;
+
+	let response = await fetch(path + '/exams/' + exam_id + '/marks', {
+		method: 'GET'
+	});
+
+	expect(response.status).toBe(200);
+
+});
+
+/*
+- method: GET
+- path: /exams/{exam_id}/marks
+- valid: no
+- description: trying to get the marks list of a single unexisting exam
+*/
+test("Test GET /exams/{exam_id}/marks with wrong exam_id", async () => {
+
+	let exam_id = 9999;
+
+	let response = await fetch(path + '/exams/' + exam_id + '/marks', {
+		method: 'GET'
+	});
+
+	expect(response.status).toBe(404);
+
+});
 /*
 	- method: DELETE
 	- path: /exams/{exam_id}
@@ -270,7 +289,7 @@ test("Test DELETE /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 		method: 'DELETE',
 	});
 
@@ -287,48 +306,13 @@ test("Test DELETE /exams/{exam_id} with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 
-	let response = await fetch('${path}/exams/' + exam_id, {
+	let response = await fetch(path + '/exams/' + exam_id, {
 		method: 'DELETE',
 	});
 
 	expect(response.status).toBe(404);
 });
 
-/*
-	- method: GET
-	- path: /exams/{exam_id}/marks
-	- valid: yes
-	- description: trying to get the marks list of a single exam
-*/
-test("Test GET /exams/{exam_id}/marks with right exam_id", async () => {
-
-	let exam_id = 1;
-
-	let response = await fetch('${path}/exams/' + exam_id + '/marks', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(200);
-
-});
-
-/*
-	- method: GET
-	- path: /exams/{exam_id}/marks
-	- valid: no
-	- description: trying to get the marks list of a single unexisting exam
-*/
-test("Test GET /exams/{exam_id}/marks with wrong exam_id", async () => {
-
-	let exam_id = 9999;
-
-	let response = await fetch('${path}/exams/' + exam_id + '/marks', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(404);
-
-});
 
 /*
 	- method: GET
@@ -340,7 +324,7 @@ test("Test GET /exams/{owner_id}/owner with right owner_id", async () => {
 
 	let owner_id = 1;
 
-	let response = await fetch('${path}/exams/' + owner_id + '/owner', {
+	let response = await fetch(path + '/exams/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 
@@ -358,7 +342,7 @@ test("Test GET /exams/{owner_id}/owner with wrong owner_id", async () => {
 
 	let owner_id = 9999;
 
-	let response = await fetch('${path}/exams/' + owner_id + '/owner', {
+	let response = await fetch(path + '/exams/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 

@@ -21,6 +21,7 @@ const version = 'V1';
 
 //setting public root path
 const app = express();
+app.use(express.json());
 //app.use('/' + version + '/', express.static('public'));
 
 //starting the server
@@ -66,6 +67,9 @@ app.get('/exams', function (req, res) {
 app.post('/exams', function (req, res) {
 
 	//getting data from request body
+	// var body = JSON.parse(req.body);
+	// var owner_id = body['owner_id'];
+	// var questions = body['questions'];
 	var owner_id = req.body['owner_id'];
 	var questions = req.body['questions'];
 
@@ -150,12 +154,15 @@ app.get('/exams/:exam_id', function (req, res) {
 	method: PATCH
 	path: /exams/:exam_id
 */
-app.patch('exams/:exam_id', function (req, res) {
+app.patch('/exams/:exam_id', function (req, res) {
 
 	//catching the exam_id from the request path
 	var exam_id = Number(req.params.exam_id);
 
 	//catching exam update data from the body
+	// var body = JSON.parse(req.body);
+	// var owner_id = body['owner_id'];
+	// var questions = body['questions'];
 	var owner_id = req.body['owner_id'];
 	var questions = req.body['questions'];
 
@@ -173,7 +180,7 @@ app.patch('exams/:exam_id', function (req, res) {
 	var present_exam = db.findBy(exams_table, 'exam_id', exam_id);
 
 	//if no exam found in the database sends a "404 Not Found" response
-	if(util.isNull(exam)){
+	if(util.isNull(present_exam)){
 
 		//sending response
 		res.status(404).send();
@@ -203,7 +210,7 @@ app.patch('exams/:exam_id', function (req, res) {
 	method: DELETE
 	path: /exams/:exam_id
 */
-app.delete('exams/:exam_id', function (req, res) {
+app.delete('/exams/:exam_id', function (req, res) {
 
 	//catching the exam_id from the request path
 	var exam_id = Number(req.params.exam_id);
@@ -221,8 +228,15 @@ app.delete('exams/:exam_id', function (req, res) {
 	//otherwise tries to delete the exam from the database
 	var deleted = db.deleteBy(exams_table, 'exam_id', exam_id);
 
+	if(deleted == null){
+		res.status(500).send();
+		util.log(tag, 'Sent "500 Internal Server Error" response');
+
+		return;
+	}
+
 	//if hasn't been deleted means the exam wasn't found in the database and sends a "404 Not Found" response
-	if(!deleted){
+	if(deleted == false){
 
 		//sending response
 		res.status(404).send();
@@ -332,7 +346,7 @@ app.get('/exams/:owner_id/owner', function (req, res) {
 	if(util.isNull(user)){
 
 		//sending response
-		res.status(204).send();
+		res.status(404).send();
 		util.log(tag, 'Sent "404 Not Found" response');
 		return;
 	}
