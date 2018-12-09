@@ -18,7 +18,6 @@ function init(app){
 		}
 		var user = database.findBy("users", "user_id", userId);
 		if (util.isNull(user)){
-			console.log('not found');
 		   return res.status(404).send();
 	    }
 		
@@ -35,7 +34,6 @@ function init(app){
 		var user = req.body["username"];
 		var email = req.body["email"];
 		var psw = req.body["psw"];
-		console.log(first,second,user,email,psw);
 		if (first == null || second == null || user == null || email == null || psw == null){
 			
 			return res.status(400).send();
@@ -71,7 +69,6 @@ function init(app){
 	//Delete user object by id
 	app.delete('/users/:usersId', (req, res) => {
 		var user_Id = parseInt(req.params["usersId"]);
-		console.log("will delete id:"+ user_Id);
 		if (!util.isInteger(user_Id)){
 			return res.status(400).send();
 		}
