@@ -1,8 +1,8 @@
 fetch = require('node-fetch');
 
-var version = 'V1';
-
 var host = process.env.BASEURL || 'http://localhost:3000';
+var version = 'V1';
+var path = host;
 
 //****************** exams path tests ******************
 
@@ -13,7 +13,7 @@ var host = process.env.BASEURL || 'http://localhost:3000';
 */
 test("Test GET /exams", async () => {
 
-    let response = await fetch(`${host}/${version}/exams`,{
+    let response = await fetch('${path}/exams',{
         method: 'GET',
     });
     expect(response.status).toEqual(200);
@@ -25,14 +25,14 @@ test("Test GET /exams", async () => {
 	- path: /exams
 	- valid: yes
 */
-test("Test POST /exams with correct data", async => {
+test("Test POST /exams with correct data", async () => {
 
 	let exam = {
 		"owner_id": 30,
 		"questions": [
 			{
 				"owner_id": 30,
-				"task_type": MULTIPLE,
+				"task_type": 'MULTIPLE',
 				"text": "The best programming language?",
 				"answers": [
 					{
@@ -51,20 +51,20 @@ test("Test POST /exams with correct data", async => {
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Why?",
 				"answers": []
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Write down a C server, you have 3 minutes.",
 				"answers": []
 			}
 		]
 	};
 
-	let response = await fetch('${host}/${version/exams}', {
+	let response = await fetch('${path}/exams', {
 		method: 'POST',
 		body: JSON.stringify(exam),
 		headers: {
@@ -84,14 +84,14 @@ test("Test POST /exams with correct data", async => {
 	- valid: no
 	- description: trying to create an empty exam
 */
-test("Test POST /exams with no tasks", async => {
+test("Test POST /exams with no tasks", async () => {
 
 	let exam = {
 		"owner_id": 10,
 		"questions": []
 	};
 
-	let response = await fetch('${host}/${version/exams}', {
+	let response = await fetch('${path}/exams', {
 		method: 'POST',
 		body: JSON.stringify(exam),
 		headers: {
@@ -108,11 +108,11 @@ test("Test POST /exams with no tasks", async => {
 	- valid: yes
 	- description: trying to get an existing exam
 */
-test("Test GET /exams/{exam_id} with right exam_id", async => {
+test("Test GET /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 		method: 'GET'
 	});
 
@@ -128,11 +128,11 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 	- valid: no
 	- description: trying to get an unexisting exam
 */
-test("Test GET /exams/{exam_id} with wrong exam_id", async => {
+test("Test GET /exams/{exam_id} with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 		method: 'GET'
 	});
 
@@ -145,7 +145,7 @@ test("Test GET /exams/{exam_id} with wrong exam_id", async => {
 	- valid: yes
 	- description: trying to modify an existing exam
 */
-test("Test GET /exams/{exam_id} with right exam_id", async => {
+test("Test GET /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 	//changed right answer from C to Python
@@ -154,7 +154,7 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 		"questions": [
 			{
 				"owner_id": 30,
-				"task_type": MULTIPLE,
+				"task_type": 'MULTIPLE',
 				"text": "The best programming language?",
 				"answers": [
 					{
@@ -173,20 +173,20 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Why?",
 				"answers": []
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Write down a Python server, you have 3 minutes.",
 				"answers": []
 			}
 		]
 	}
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(exam_update),
@@ -207,7 +207,7 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 	- valid: no
 	- description: trying to modify an unexisting exam
 */
-test("Test GET /exams/{exam_id} with right exam_id", async => {
+test("Test GET /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 9999;
 	//changed right answer from C to Python
@@ -216,7 +216,7 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 		"questions": [
 			{
 				"owner_id": 30,
-				"task_type": MULTIPLE,
+				"task_type": 'MULTIPLE',
 				"text": "The best programming language?",
 				"answers": [
 					{
@@ -235,20 +235,20 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Why?",
 				"answers": []
 			},
 			{
 				"owner_id": 30,
-				"task_type": OPEN,
+				"task_type": 'OPEN',
 				"text": "Write down a Python server, you have 3 minutes.",
 				"answers": []
 			}
 		]
 	}
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(exam_update),
@@ -266,11 +266,11 @@ test("Test GET /exams/{exam_id} with right exam_id", async => {
 	- valid: yes
 	- description: trying to delete an existing exam
 */
-test("Test DELETE /exams/{exam_id} with right exam_id", async => {
+test("Test DELETE /exams/{exam_id} with right exam_id", async () => {
 
 	let exam_id = 1;
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 		method: 'DELETE',
 	});
 
@@ -283,11 +283,11 @@ test("Test DELETE /exams/{exam_id} with right exam_id", async => {
 	- valid: no
 	- description: trying to delete an unexisting exam
 */
-test("Test DELETE /exams/{exam_id} with wrong exam_id", async => {
+test("Test DELETE /exams/{exam_id} with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 
-	let response = await fetch('${host}/${version}/exams/${exam_id}', {
+	let response = await fetch('${path}/exams/' + exam_id, {
 		method: 'DELETE',
 	});
 
@@ -300,11 +300,11 @@ test("Test DELETE /exams/{exam_id} with wrong exam_id", async => {
 	- valid: yes
 	- description: trying to get the marks list of a single exam
 */
-test("Test GET /exams/{exam_id}/marks with right exam_id", async => {
+test("Test GET /exams/{exam_id}/marks with right exam_id", async () => {
 
 	let exam_id = 1;
 
-	let response = await fetch('${host}/${version}/exams/{exam_id}/marks', {
+	let response = await fetch('${path}/exams/' + exam_id + '/marks', {
 		method: 'GET'
 	});
 
@@ -318,11 +318,11 @@ test("Test GET /exams/{exam_id}/marks with right exam_id", async => {
 	- valid: no
 	- description: trying to get the marks list of a single unexisting exam
 */
-test("Test GET /exams/{exam_id}/marks with wrong exam_id", async => {
+test("Test GET /exams/{exam_id}/marks with wrong exam_id", async () => {
 
 	let exam_id = 9999;
 
-	let response = await fetch('${host}/${version}/exams/{exam_id}/marks', {
+	let response = await fetch('${path}/exams/' + exam_id + '/marks', {
 		method: 'GET'
 	});
 
@@ -336,11 +336,11 @@ test("Test GET /exams/{exam_id}/marks with wrong exam_id", async => {
 	- valid: yes
 	- description: trying to get the exams list of a single owner
 */
-test("Test GET /exams/{owner_id}/owner with right owner_id", async => {
+test("Test GET /exams/{owner_id}/owner with right owner_id", async () => {
 
 	let owner_id = 1;
 
-	let response = await fetch('${host}/${version}/exams/{owner_id}/owner', {
+	let response = await fetch('${path}/exams/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 
@@ -354,38 +354,15 @@ test("Test GET /exams/{owner_id}/owner with right owner_id", async => {
 	- valid: no
 	- description: trying to get the exams list of a single unexisting owner
 */
-test("Test GET /exams/{owner_id}/owner with wrong owner_id", async => {
+test("Test GET /exams/{owner_id}/owner with wrong owner_id", async () => {
 
 	let owner_id = 9999;
 
-	let response = await fetch('${host}/${version}/exams/{owner_id}/owner', {
+	let response = await fetch('${path}/exams/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 
 	expect(response.status).toBe(404);
 	//should also test when no exams present
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//******************++++++++++++++++++******************
+//******************************************************

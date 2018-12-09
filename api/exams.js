@@ -9,8 +9,8 @@
 var express = require('express');
 
 //importing database and utility functions
-var db = require('./api/database.js');
-var util = require('./api/utility.js');
+var db = require('./database.js');
+var util = require('./utility');
 
 //setting macros
 const tag = 'EXAMS';
@@ -21,7 +21,7 @@ const version = 'V1';
 
 //setting public root path
 const app = express();
-app.use('/' + version + '/', express.static('public'));
+//app.use('/' + version + '/', express.static('public'));
 
 //starting the server
 var port = process.env.PORT || 3000;

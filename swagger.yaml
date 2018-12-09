@@ -148,10 +148,10 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/Exam'
-        204:
-          description: 'No exams'
         400:
-          description: "Error creating exams"
+          description: "Error creating exams, wrong data"
+        500:
+          description: "Error creating exam in the database"
 
   /exams/{exam_id}:
     get:
@@ -167,6 +167,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/Exam'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
     patch:
@@ -187,6 +189,8 @@ paths:
           description: 'Exam updated'
           schema:
             $ref: '#/definitions/Exam'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
 
@@ -201,6 +205,8 @@ paths:
       responses:
         204:
           description: 'Exam deleted'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
 
@@ -218,6 +224,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/ArrayOfMarks'
+        204:
+          description: 'No submissions for the exam'
         401:
           description: 'Unauthorized'
         404:
