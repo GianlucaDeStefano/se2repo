@@ -7,9 +7,9 @@ const PORT = process.env.PORT || 3000
 
 //Api init imports. Aggiungere qui import ai file delle implemetazioni
 const reviewApi = require('./api/review.js');
-//const submissionApi = require('./api/submission.js');
+const submissionApi = require('./api/submission.js');
 //const groupApi = require('./api/group.js');
-//const userApi = require('./api/user.js');
+const userApi = require('./api/user.js');
 
 //Versioned flag. true = api on http://localhost/V1 , false = api on http://localhost
 const versioned = true;
@@ -38,7 +38,7 @@ routerToInit.use(function(req, res, next) {
 
 //Init router with api request. Aggiungere qui tutti gli init alle api che volete aggiugnere.
 reviewApi.init(routerToInit);
-//submissionApi.init(routerToInit);
+submissionApi.init(routerToInit);
 //groupApi.init(routerToInit);
 userApi.init(routerToInit);
 
