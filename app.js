@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000
 const reviewApi = require('./api/review.js');
 //const submissionApi = require('./api/submission.js');
 //const groupApi = require('./api/group.js');
-const userApi = require('./api/user.js');
+//const userApi = require('./api/user.js');
 
 //Versioned flag. true = api on http://localhost/V1 , false = api on http://localhost
 const versioned = true;
@@ -51,3 +51,4 @@ app.listen(PORT, () => console.log('Starting server app on port '+ PORT))
 function getFullUrl(req){
 	return req.protocol + '://' + req.get('host') + req.originalUrl;
 }
+

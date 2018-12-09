@@ -42,6 +42,7 @@ function init(app){
 	//Get submission object by id
 	app.get('/submissions/:submission_id', (req, res) => {
 	   var submission_id = parseInt(req.params["submission_id"]);
+	   
 	   if (!util.isInteger(submission_id)){
 		   util.log(TAG, "Error: id is not an integer: "+submission_id);
 		   return res.status(400).send();
@@ -51,9 +52,30 @@ function init(app){
 		   util.log(TAG, "Error: failed to find submission with id "+submission_id+" in database");
 		   return res.status(400).send();
 	   }
+	   submission
 	   util.log(TAG, "Read: "+util.json(submission));
 	   res.json(submission);
 	});
+	
+	//give and update a vote to the submission
+	app.patch('/submissions/:submission_id/mark', (req, res) => {
+	   var submission_id = parseInt(req.params["submission_id"]);
+	   var mark=req.body["number"];
+	   if (!util.isInteger(submission_id) || !utils.isInteger(mark)){
+		   util.log(TAG, "Error: id is not an integer: "+submission_id);
+		   return res.status(400).send();
+	   }
+	   var submission = database.findBy(TABLE, "id", submission_id);
+	   if (util.isNull(submission)){
+		   util.log(TAG, "Error: failed to find submission with id "+submission_id+" in database");
+		   return res.status(404).send();
+	   }
+	   submission["mark"] = mark;
+	   util.log(TAG, "Ad mark: "+util.json(submission));
+	   res.json(submission);
+	});
+	
+	
 	
 }
 

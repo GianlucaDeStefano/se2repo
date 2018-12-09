@@ -64,3 +64,62 @@ test("Test GET /submissions/{id} with wrong data", async () => {
 	let response = await fetch(`${path}/submissions/asd}`);
 	expect(response.status).toEqual(400);
 });
+
+
+test("give/update mark of a submission /submissions/{id}/mark with right data", async () => {
+	expect(submission["id"]).toBeDefined();
+	let mark ={"mark":7}
+	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
+		method: 'POST',
+		body: JSON.stringify(mark),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	expect(response.status).toEqual(200);
+	var result = await response.json();
+	expect(result["id"]).toEqual(submission["id"]);
+});
+test("give/update mark of a submission /submissions/{id}/mark with invalid id", async () => {
+		expect(submission["id"]).toBeDefined();
+	let mark ={"mark":7}
+	let response = await fetch(`${path}/submissions/asd/mark`,{
+		method: 'POST',
+		body: JSON.stringify(mark),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	expect(response.status).toEqual(400);
+
+});
+
+
+test("give/update mark of a submission /submissions/{id}/mark with invalid mark", async () => {
+		expect(submission["id"]).toBeDefined();
+	let mark ={"mark":"asd"}
+	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
+		method: 'POST',
+		body: JSON.stringify(mark),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	expect(response.status).toEqual(400);
+
+});
+
+
+test("give/update mark of a submission /submissions/{id}/mark with not present id", async () => {
+		expect(submission["id"]).toBeDefined();
+	let mark ={"mark":7}
+	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
+		method: 'POST',
+		body: JSON.stringify(mark),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	expect(response.status).toEqual(400);
+
+});
