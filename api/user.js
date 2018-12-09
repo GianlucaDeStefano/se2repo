@@ -13,9 +13,7 @@ function init(app){
 
 	// add a new user to the db
 	app.post("/users/", (req, res) => {
-		console.log('a');
 		var first = req.body["first_name"];
-		console.log('b');
 		var second = req.body["last_name"];
 		var user = req.body["username"];
 		var email = req.body["email"];
@@ -73,7 +71,6 @@ function init(app){
 	//Delete user object by id
 	app.delete('/users/:usersId', (req, res) => {
 		var user_Id = parseInt(req.params["usersId"]);
-		console.log(user_Id);
 		if (!util.isInteger(user_Id)){
 			return res.status(400).send();
 		}
