@@ -31,7 +31,7 @@ paths:
           schema:
             $ref: '#/definitions/UserData' # returns every user data without the psw
         400:
-          description: 'Error creating user, missing or wrong data'
+            description: 'Error creating user, missing or wrong data'
   /users/login:
     post:
       description: 'Login as a user'
@@ -148,6 +148,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/Exam'
+        204:
+          description: 'No exams'
         400:
           description: "Error creating exams"
 
@@ -293,6 +295,24 @@ paths:
       parameters:
         - name: task_id
           in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: 'Task deleted'
+        404:
+          description: 'Task not found'
+        401:
+          description: 'Unauthorized'
+
+    patch:
+      summary: 'Update task info'
+      description: 'Update task info by id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
           required: true
           type: integer
       responses:
