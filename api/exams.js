@@ -6,7 +6,7 @@
 */
 
 //using express as HTTP server
-var express = require('express');
+//var express = require('express');
 
 //importing database and utility functions
 var db = require('./database.js');
@@ -21,8 +21,8 @@ function init(app){
 	const version = 'V1';
 
 	//setting public root path
-	const app = express();
-	app.use(express.json());
+	//const app = express();
+	//app.use(express.json());
 	//app.use('/' + version + '/', express.static('public'));
 
 	//starting the server
