@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const host = process.env.host || 'http://localhost:3000';
 const version = 'V1';
-const path = host; //= ${host}/${version}
+const path = host+"/"+version;
 var review = null;
 const test_comment = "not a common comment really";
 
