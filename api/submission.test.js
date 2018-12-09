@@ -1,7 +1,7 @@
 fetch = require('node-fetch');
 const host = process.env.host || 'http://localhost:3000';
 const version = 'V1';
-const path = host; //= ${host}/${version}
+const path = host+"/"+version;
 var submission = null;
 test("Test POST /submissions with right data", async () => {
 	let reviewTest = {
@@ -68,9 +68,9 @@ test("Test GET /submissions/{id} with wrong data", async () => {
 
 test("give/update mark of a submission /submissions/{id}/mark with right data", async () => {
 	expect(submission["id"]).toBeDefined();
-	let mark ={"mark":7}
+	let mark ={"number":7}
 	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
-		method: 'POST',
+		method: 'PATCH',
 		body: JSON.stringify(mark),
 		headers: {
 			'Content-Type': 'application/json'
@@ -82,9 +82,9 @@ test("give/update mark of a submission /submissions/{id}/mark with right data", 
 });
 test("give/update mark of a submission /submissions/{id}/mark with invalid id", async () => {
 		expect(submission["id"]).toBeDefined();
-	let mark ={"mark":7}
+	let mark ={"number":7}
 	let response = await fetch(`${path}/submissions/asd/mark`,{
-		method: 'POST',
+		method: 'PATCH',
 		body: JSON.stringify(mark),
 		headers: {
 			'Content-Type': 'application/json'
@@ -97,9 +97,9 @@ test("give/update mark of a submission /submissions/{id}/mark with invalid id", 
 
 test("give/update mark of a submission /submissions/{id}/mark with invalid mark", async () => {
 		expect(submission["id"]).toBeDefined();
-	let mark ={"mark":"asd"}
+	let mark ={"number":"asd"}
 	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
-		method: 'POST',
+		method: 'PATCH',
 		body: JSON.stringify(mark),
 		headers: {
 			'Content-Type': 'application/json'
@@ -111,15 +111,14 @@ test("give/update mark of a submission /submissions/{id}/mark with invalid mark"
 
 
 test("give/update mark of a submission /submissions/{id}/mark with not present id", async () => {
-		expect(submission["id"]).toBeDefined();
-	let mark ={"mark":7}
-	let response = await fetch(`${path}/submissions/`+submission["id"]+'/mark',{
-		method: 'POST',
+	let mark ={"number":7}
+	let response = await fetch(`${path}/submissions/4993993/mark`,{
+		method: 'PATCH',
 		body: JSON.stringify(mark),
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	});
-	expect(response.status).toEqual(400);
+	expect(response.status).toEqual(404);
 
 });

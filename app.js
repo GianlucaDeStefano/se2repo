@@ -51,4 +51,3 @@ app.listen(PORT, () => console.log('Starting server app on port '+ PORT))
 function getFullUrl(req){
 	return req.protocol + '://' + req.get('host') + req.originalUrl;
 }
-

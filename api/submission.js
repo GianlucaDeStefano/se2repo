@@ -60,8 +60,8 @@ function init(app){
 	//give and update a vote to the submission
 	app.patch('/submissions/:submission_id/mark', (req, res) => {
 	   var submission_id = parseInt(req.params["submission_id"]);
-	   var mark=req.body["number"];
-	   if (!util.isInteger(submission_id) || !utils.isInteger(mark)){
+	   var mark=parseInt(req.body["number"]);
+	   if (!util.isInteger(submission_id) || !util.isInteger(mark)){
 		   util.log(TAG, "Error: id is not an integer: "+submission_id);
 		   return res.status(400).send();
 	   }
