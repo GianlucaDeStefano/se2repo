@@ -17,7 +17,6 @@ function init(app){
 			return res.status(400).send();
 		}
 		var user = database.findBy("users", "user_id", userId);
-		util.log(TAG,"Read: "+ util.json(user));
 		if (util.isNull(user)){
 			console.log('not found');
 		   return res.status(404).send();
@@ -29,12 +28,16 @@ function init(app){
 
 	// add a new user to the db
 	app.post("/users/", (req, res) => {
+		console.log('a');
 		var first = req.body["first_name"];
+		console.log('b');
 		var second = req.body["last_name"];
 		var user = req.body["username"];
 		var email = req.body["email"];
-		var psw = req.body["password"];
+		var psw = req.body["psw"];
+		console.log(first,second,user,email,psw);
 		if (first == null || second == null || user == null || email == null || psw == null){
+			
 			return res.status(400).send();
 		}
 		var id=database.generateId("users");
@@ -42,7 +45,7 @@ function init(app){
 			return res.status(500).send();
 		}
 		util.log(TAG,"Created : "+ util.json(user));
-		return res.status(200).send();
+		return res.status(201).send();
 	});
 
 	// update users by id
@@ -56,8 +59,7 @@ function init(app){
 		if (first == null || second == null || user == null || email == null || psw == null){
 			return res.status(400).send();
 		}
-		var id=database.generateId("users");
-		var user = database.findBy("users", "id", id);
+		var user = database.findBy("users", "users_id", userId);
 		if (util.isNull(user)){
 			return res.status(404).send();
 		}
@@ -67,15 +69,16 @@ function init(app){
 	});
 
 	//Delete user object by id
-	app.delete('/users/:users_Id', (req, res) => {
-		var user_Id = parseInt(req.params["users_Id"]);
+	app.delete('/users/:usersId', (req, res) => {
+		var user_Id = parseInt(req.params["usersId"]);
+		console.log("will delete id:"+ user_Id);
 		if (!util.isInteger(user_Id)){
 			return res.status(400).send();
 		}
-		if(!database.deleteBy("users", "id", user_Id)){
-			return res.status(400).send();
+		if(!database.deleteBy("users", "user_id", user_Id)){
+			return res.status(404).send();
 		}
-		util.log(TAG,"Deleted : "+ util.json(user));
+		util.log(TAG,"Deleted : "+ user_Id);
 		return res.status(200).send();
 	})
 }
