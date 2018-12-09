@@ -146,7 +146,7 @@ paths:
       responses:
         201:
           description: 'OK'
-          schema: 
+          schema:
             $ref: '#/definitions/Exam'
         400:
           description: "Error creating exams"
@@ -187,7 +187,7 @@ paths:
             $ref: '#/definitions/Exam'
         404:
           description: 'Exam not found'
-          
+
     delete:
       summary: 'Delete an exam'
       description: 'Delete an existing exam by id'
@@ -220,7 +220,7 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'Exam not found'
-            
+
   /exams/{owner_id}/owner:
     get:
       summary: 'List exams created by ownerId'
@@ -241,7 +241,7 @@ paths:
           description: 'Owner not found'
         401:
           description: 'Unauthorized'
-        
+
   /tasks:
     get:
       summary: 'Get tasks'
@@ -286,7 +286,7 @@ paths:
             $ref: '#/definitions/Task'
         404:
           description: 'Task not found'
-          
+
     delete:
       summary: 'Delete task'
       description: 'Delete an existing task by id'
@@ -302,7 +302,7 @@ paths:
           description: 'Task not found'
         401:
           description: 'Unauthorized'
-          
+
     patch:
       summary: 'Update task info'
       description: 'Update task info by id'
@@ -325,14 +325,14 @@ paths:
           description: 'Task not found'
         401:
           description: 'Unauthorized'
-          
+
   /tasks/{task_id}/answer:
     get:
       summary: 'get task answer'
       description: 'get the task answer'
-      parameters: 
+      parameters:
         - name: task_id
-          in: path 
+          in: path
           required: true
           type: integer
       responses:
@@ -345,7 +345,7 @@ paths:
         404:
           description: 'Task not found'
     put:
-      summary: 'add answer' 
+      summary: 'add answer'
       description: 'add answer to the task'
       parameters:
         - name: task_id
@@ -365,7 +365,7 @@ paths:
         404:
           description: 'Task not found'
     patch:
-      summary: 'update answer' 
+      summary: 'update answer'
       description: 'update answer of the test'
       parameters:
         - name: task_id
@@ -416,7 +416,7 @@ paths:
           description: 'Review created successfully'
         400:
           description: "Exam id or task id not found"
-  
+
   /reviews/{review_id}:
     get:
       summary: 'Get review data'
@@ -433,7 +433,7 @@ paths:
             $ref: '#/definitions/Review'
         404:
           description: 'Review not found'
-    patch: 
+    patch:
       summary: 'Change review data'
       description: 'Change the review data'
       parameters:
@@ -451,11 +451,12 @@ paths:
             properties:
               comment:
                 type: string
+
       responses:
         200:
           description: 'Review modified successfully'
         401:
-          description: 'Unauthorized' 
+          description: 'Unauthorized'
         404:
           description: 'Review not found'
     delete:
@@ -470,7 +471,7 @@ paths:
         204:
           description: 'Deleted'
         401:
-          description: 'Unauthorized' 
+          description: 'Unauthorized'
   /groups:
     post:
       summary: 'Create a group'
@@ -485,10 +486,10 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/Group' 
-        400: 
+            $ref: '#/definitions/Group'
+        400:
           description: 'Error creating group'
-          
+
   /groups/{group_id}:
     patch:
       summary: 'Update a group'
@@ -568,7 +569,7 @@ paths:
             description: 'Params do not match'
           401:
             description: "You can't manage this group"
-          
+
   /groups/{group_id}/exam:
     put:
       summary: 'Add exam to group'
@@ -610,12 +611,12 @@ paths:
           description: 'Parameters do not match'
         401:
           description: "You can't manage this group"
-          
+
   /submissions:
     post:
       summary: 'Add a submission'
       description: "Add a new submission"
-      parameters: 
+      parameters:
         - name: submission
           in: body
           required: true
@@ -628,11 +629,11 @@ paths:
             $ref: '#/definitions/Submission'
         401:
           description: 'Unathorized'
-          
+
   /submissions/{submission_id}:
-    get: 
+    get:
       summary: 'See submission specification'
-      description: 'See the submission specification' 
+      description: 'See the submission specification'
       parameters:
         - name: submission_id
           in: path
@@ -645,9 +646,9 @@ paths:
             $ref: '#/definitions/Submission'
         404:
           description: 'Submission not found'
-    delete: 
+    delete:
       summary: 'Delete submission'
-      description: 'Delete the submission' 
+      description: 'Delete the submission'
       parameters:
         - name: submission_id
           in: path
@@ -660,14 +661,14 @@ paths:
           description: 'Unathorized'
         404:
           description: 'Submission not found'
-      
+
   /submissions/{submission_id}/mark:
     put:
       summary: 'Add vote to the submission'
       description: 'Add a vote to the submission'
-      parameters: 
+      parameters:
         - name: submission_id
-          in: path 
+          in: path
           required: true
           type: integer
         - name: mark
@@ -675,12 +676,12 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Mark'
-      responses: 
+      responses:
         200:
           description: 'Mark added'
         401:
           description: 'Unauthorized'
-        404: 
+        404:
           description: 'Submission not found'
     patch:
       summary: 'Change submission mark'
@@ -776,7 +777,7 @@ definitions:
         example: 'Quanto fa 2+2?'
       aswers_id:
         type: integer
-        
+
   TaskData:
     type: object
     properties:
@@ -789,7 +790,7 @@ definitions:
         example: 'Quanto fa 2+2?'
       aswers_id:
         type: integer
-          
+
   Exam:
     type: object
     properties:
@@ -868,7 +869,7 @@ definitions:
     type: object
     properties:
       id:
-        type: integer 
+        type: integer
       user_id:
         type: integer
       exam_id:
@@ -889,26 +890,26 @@ definitions:
         items:
             $ref: '#/definitions/Answer'
 
-      
+
   Id:
     type: integer
 
   Token:
     type: string
-    
+
   Mark:
     type: integer
-    
+
   ArrayOfMarks:
     type: array
     items:
         $ref: '#/definitions/Mark'
-        
+
   ArrayOfExams:
     type: array
     items:
         $ref: '#/definitions/Exam'
-        
+
   ArrayOfTasks:
     type: array
     items:
