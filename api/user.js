@@ -3,26 +3,12 @@ const database = require('./database.js');
  
 const TAG = "USER";
 
+var user;
 function init(app){
 	//print users list
 	app.get('/users', (req, res) => {
 		var users= database.getList("users");
 		return res.json(users);
-	})
-
-	// get user by id
-	app.get('/users/:userid', (req, res) => {
-		var userId = parseInt(req.params["userid"]);
-		if(!util.isInteger(userId)){
-			return res.status(400).send();
-		}
-		var user = database.findBy("users", "user_id", userId);
-		if (util.isNull(user)){
-		   return res.status(404).send();
-	    }
-		
-		util.log(TAG,"Read: "+ util.json(user));
-		return res.json(user);
 	})
 
 	// add a new user to the db
@@ -39,12 +25,30 @@ function init(app){
 			return res.status(400).send();
 		}
 		var id=database.generateId("users");
-		if(!database.insert("users", database.user(id, first, second,  user, email,psw))){
+		userobj = database.user(id, first, second,  user, email,psw);
+		if(!database.insert("users", userobj)){
 			return res.status(500).send();
 		}
-		util.log(TAG,"Created : "+ util.json(user));
-		return res.status(201).send();
+		util.log(TAG,"Created : "+ util.json(userobj));
+		return res.json(userobj);
 	});
+	
+	// get user by id
+	app.get('/users/:userid', (req, res) => {
+		var userId = parseInt(req.params["userid"]);
+		if(!util.isInteger(userId)){
+			return res.status(400).send();
+		}
+		var user = database.findBy("users", "user_id", userId);
+		if (util.isNull(user)){
+		   return res.status(404).send();
+	    }
+		
+		util.log(TAG,"Read: "+ util.json(user));
+		return res.json(user);
+	})
+
+	
 
 	// update users by id
 	app.patch("/users/:users_Id", (req, res) => {
@@ -69,6 +73,7 @@ function init(app){
 	//Delete user object by id
 	app.delete('/users/:usersId', (req, res) => {
 		var user_Id = parseInt(req.params["usersId"]);
+		console.log(user_Id);
 		if (!util.isInteger(user_Id)){
 			return res.status(400).send();
 		}
