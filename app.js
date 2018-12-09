@@ -26,7 +26,7 @@ if (versioned){
 	//Create V1 router
 	const versionV1 = express.Router();
 	routerToInit = versionV1;
-	//User api router on /V1 path 
+	//User api router on /V1 path
 	app.use('/V1', versionV1);
 }
 

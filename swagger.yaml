@@ -31,7 +31,7 @@ paths:
           schema:
             $ref: '#/definitions/UserData' # returns every user data without the psw
         400:
-          description: 'Error creating user, missing or wrong data'
+            description: 'Error creating user, missing or wrong data'
   /users/login:
     post:
       description: 'Login as a user'
@@ -149,7 +149,9 @@ paths:
           schema:
             $ref: '#/definitions/Exam'
         400:
-          description: "Error creating exams"
+          description: "Error creating exams, wrong data"
+        500:
+          description: "Error creating exam in the database"
 
   /exams/{exam_id}:
     get:
@@ -165,6 +167,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/Exam'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
     patch:
@@ -185,6 +189,8 @@ paths:
           description: 'Exam updated'
           schema:
             $ref: '#/definitions/Exam'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
 
@@ -199,6 +205,8 @@ paths:
       responses:
         204:
           description: 'Exam deleted'
+        400:
+          description: 'Exam not found, bad exam_id'
         404:
           description: 'Exam not found'
 
@@ -216,6 +224,8 @@ paths:
           description: 'OK'
           schema:
             $ref: '#/definitions/ArrayOfMarks'
+        204:
+          description: 'No submissions for the exam'
         401:
           description: 'Unauthorized'
         404:
@@ -293,6 +303,24 @@ paths:
       parameters:
         - name: task_id
           in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: 'Task deleted'
+        404:
+          description: 'Task not found'
+        401:
+          description: 'Unauthorized'
+
+    patch:
+      summary: 'Update task info'
+      description: 'Update task info by id'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          type: integer
           required: true
           type: integer
       responses:

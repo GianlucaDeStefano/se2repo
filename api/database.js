@@ -134,12 +134,32 @@ function findBy(table_name, parameter, value){
 	return null;
 }
 
+// trova degli elementi utilizzando come chiave <value> all'interno del campo <parameter> nella tabella <table_name>
+function findListBy(table_name, parameter, value){
+   var table =  DATABASE[table_name]["data"];
+   if (table == null){
+	   return null;
+   }
+   var res = [];
+   for (var i = 0; i < table.length; ++i){
+	   if (table[i][parameter] == value){
+		   res.push(table[i]);
+	   }
+   }
+   if(res.length == 0){
+	   return null;
+   }
+   else{
+	   return res;
+   }
+}
+
 // inserisce l'oggetto passato all'interno della tabella indicata
 function insert(table_name,obj){
 	var table = DATABASE[table_name]["data"];
 	if(table == null){
 		return false
-	}	
+	}
 	table.push(obj);
 	return true;
 }
@@ -168,8 +188,4 @@ function deleteBy(table_name,parameter,value){
     }
     return false;
 }
-module.exports = {addTable:addTable,table:table,user:user,exam:exam,task:task,review:review,group:group,submission:submission,findBy:findBy,insert:insert,getList:getList,generateId:generateId, deleteBy: deleteBy};
-
-
-
-
+module.exports = {addTable:addTable,table:table,user:user,exam:exam,task:task,review:review,group:group,submission:submission,findBy:findBy,findListBy:findListBy,insert:insert,getList:getList,generateId:generateId, deleteBy: deleteBy};
