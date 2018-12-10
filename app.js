@@ -66,10 +66,10 @@ app.post('/tasks', function (req, res) {
 
 	//getting data from request body
 	var owner_id = req.body['owner_id'];
-	var questions = req.body['questions'];
+	var text = req.body['text'];
 
 	//if request body data not right sends a "400" response
-	if(!util.isInteger(owner_id) | owner_id < 0 | !util.isArray(questions) | questions.length < 1){
+	if(!util.isInteger(owner_id) | owner_id < 0 | !util.isArray(text) | text.length < 1){
 
 		//sending response
 		res.status(400).send();
@@ -85,7 +85,7 @@ app.post('/tasks', function (req, res) {
 	//generating a new id for the task to be inserted in the database
 	var id = db.generateId(tasks_table);
 	//inserting task in the database
-	var task = db.task(id, owner_id, questions);
+	var task = db.task(id, owner_id, text);
 
 	//if an internal database error occurs we send a "500 Internal Server Error" response
 	if(!db.insert(tasks_table, task)){
@@ -107,15 +107,15 @@ app.post('/tasks', function (req, res) {
 
 /*
 	method: GET
-	path: /tasks/:task_id
+	path: /tasks/:id
 */
-app.get('/tasks/:task_id', function (req, res) {
+app.get('/tasks/:id', function (req, res) {
 
-	//catching the task_id from the request path
-	var task_id = Number(req.params.task_id);
+	//catching the id from the request path
+	var id = Number(req.params.id);
 
-	//if the task_id isn't a legal id we send a "400 Bad Request" response
-	if(!util.isInteger(task_id) | task_id < 0 ){
+	//if the id isn't a legal id we send a "400 Bad Request" response
+	if(!util.isInteger(id) | id < 0 ){
 
 		//sending response
 		res.status(400).send();
@@ -125,7 +125,7 @@ app.get('/tasks/:task_id', function (req, res) {
 	}
 
 	//otherwise tries to retrieve the task from the database
-	var task = db.findBy(tasks_table, 'task_id', task_id);
+	var task = db.findBy(tasks_table, 'id', id);
 
 	//if no task found in the database sends a "404 Not Found" response
 	if(util.isNull(task)){
@@ -147,19 +147,19 @@ app.get('/tasks/:task_id', function (req, res) {
 
 /*
 	method: PATCH
-	path: /tasks/:task_id
+	path: /tasks/:id
 */
-app.patch('tasks/:task_id', function (req, res) {
+app.patch('tasks/:id', function (req, res) {
 
-	//catching the task_id from the request path
-	var task_id = Number(req.params.task_id);
+	//catching the id from the request path
+	var id = Number(req.params.id);
 
 	//catching task update data from the body
 	var owner_id = req.body['owner_id'];
-	var questions = req.body['questions'];
+	var text = req.body['text'];
 
-	//if the task_id/owner_id isn't a legal id or questions isn't a valid array, sends a "400 Bad Request" response
-	if(!util.isInteger(task_id) | task_id < 0 | !util.isInteger(owner_id) | owner_id < 0 | !util.isArray(questions) | questions.length < 1){
+	//if the id/owner_id isn't a legal id or text isn't a valid array, sends a "400 Bad Request" response
+	if(!util.isInteger(id) | id < 0 | !util.isInteger(owner_id) | owner_id < 0 | !util.isArray(text) | text.length < 1){
 
 		//sending response
 		res.status(400).send();
@@ -169,7 +169,7 @@ app.patch('tasks/:task_id', function (req, res) {
 	}
 
 	//otherwise tries to retrive the task from the database
-	var present_task = db.findBy(tasks_table, 'task_id', task_id);
+	var present_task = db.findBy(tasks_table, 'id', id);
 
 	//if no task found in the database sends a "404 Not Found" response
 	if(util.isNull(task)){
@@ -183,9 +183,9 @@ app.patch('tasks/:task_id', function (req, res) {
 
 	//otherwise tries to update the task in the database (by cancelling and re-adding it)
 	//deleting the old task
-	db.deleteBy(tasks_table, 'task_id', task_id);
+	db.deleteBy(tasks_table, 'id', id);
 
-	var task_update = db.task(task_id, owner_id, questions);
+	var task_update = db.task(id, owner_id, text);
 	//inserting the new updated task
 	db.insert(tasks_table, task_update);
 
@@ -200,15 +200,15 @@ app.patch('tasks/:task_id', function (req, res) {
 
 /*
 	method: DELETE
-	path: /tasks/:task_id
+	path: /tasks/:id
 */
-app.delete('tasks/:task_id', function (req, res) {
+app.delete('tasks/:id', function (req, res) {
 
-	//catching the task_id from the request path
-	var task_id = Number(req.params.task_id);
+	//catching the id from the request path
+	var id = Number(req.params.id);
 
-	//if the task_id isn't a legal id, sends a "400 Bad Request" response
-	if(!util.isInteger(task_id) | task_id < 0){
+	//if the id isn't a legal id, sends a "400 Bad Request" response
+	if(!util.isInteger(id) | id < 0){
 
 		//sending response
 		res.status(400).send();
@@ -218,7 +218,7 @@ app.delete('tasks/:task_id', function (req, res) {
 	}
 
 	//otherwise tries to delete the task from the database
-	var deleted = db.deleteBy(tasks_table, 'task_id', task_id);
+	var deleted = db.deleteBy(tasks_table, 'id', id);
 
 	//if hasn't been deleted means the task wasn't found in the database and sends a "404 Not Found" response
 	if(!deleted){
@@ -231,8 +231,67 @@ app.delete('tasks/:task_id', function (req, res) {
 	}
 
 	//logs activity
-	util.log(tag, 'Deleted task with task_id: ' + task_id);
+	util.log(tag, 'Deleted task with id: ' + id);
 
 	//if it has been successfully deleted we send a "204 No Content" response
 	res.status(204).send();
+});
+
+
+/*
+	method: GET
+	path: /tasks/{id}/answer
+
+	get the task answers
+*/
+
+app.get('/tasks/:id/answer', function (req, res) {
+
+	//catching the id from the request path
+	var id = Number(req.params.id);
+
+	//if the id isn't a legal id we send a "400 Bad Request" response
+	if(!util.isInteger(id) | id < 0 ){
+
+		//sending response
+		res.status(400).send();
+		util.log(tag, 'Sent "400 Bad Request" response');
+
+		return;
+	}
+
+	//otherwise tries to retrieve the task from the database
+	var task = db.findBy(tasks_table, 'id', id);
+
+	//if no task found in the database sends a "404 Not Found" response
+	if(util.isNull(task)){
+
+		//sending response
+		res.status(404).send();
+		util.log(tag, 'Sent "404 Not Found" response');
+
+		return;
+	}
+
+
+
+	//retrieves the entire list of answers
+	var tasks = db.findListBy(tasks_table, 'id', id);
+
+	//if no exams present sends a "204 No content" response
+	if(util.isNull(tasks)){
+
+		//sending response
+		res.status(204).send();
+		util.log(tag, 'Sent "204 No content" response');
+		return;
+	}
+
+	//logs activity
+	util.log(tag, 'Retrieved tasks: ' + tasks);
+
+	//otherwise sends the tasks list
+	res.status(200);
+	res.send(util.json(tasks));
+	util.log(tag, 'Sent "200 OK" response');
 });
