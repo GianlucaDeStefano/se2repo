@@ -3,6 +3,7 @@ var db = require('./database.js');
 var util = require('./utility');
 
 function init(app){
+
 	//setting macros
 	const tag = 'EXAMS';
 	const exams_table = 'exams';
@@ -22,7 +23,6 @@ function init(app){
 
 		//if no exams present sends a "204 No content" response
 		if(util.isNull(exams)){
-
 			//sending response
 			res.status(204).send();
 			util.log(tag, 'Sent "204 No content" response');
@@ -45,26 +45,18 @@ function init(app){
 	app.post('/exams', (req, res) => {
 
 		//getting data from request body
-		// var body = JSON.parse(req.body);
-		// var owner_id = body['owner_id'];
-		// var questions = body['questions'];
 		var owner_id = req.body['owner_id'];
 		var questions = req.body['questions'];
 
-		//if request body data not right sends a "400" response
+		//if request body data not right sends a "400 Bad Request" response
 		if(!util.isInteger(owner_id) | owner_id < 0 | !util.isArray(questions) | questions.length < 1){
-
 			//sending response
 			res.status(400).send();
-			util.log(tag, 'Sent "400 Error" response');
-
+			util.log(tag, 'Sent "400 Bad Request" response');
 			return;
 		}
 
 		//otherwise tries to insert data in the database
-		//success --> sends a "201 Created" response
-		//fail --> sends a "500 Internal Server Error" response
-
 		//generating a new id for the exam to be inserted in the database
 		var id = db.generateId(exams_table);
 		//inserting exam in the database
@@ -72,16 +64,15 @@ function init(app){
 
 		//if an internal database error occurs we send a "500 Internal Server Error" response
 		if(!db.insert(exams_table, exam)){
-
 			//sending response
 			res.status(500).send();
 			util.log(tag, 'Sent "500 Internal Server Error" response');
-
 			return;
 		}
 
 		//logging activity
 		util.log(tag, 'Created: ' + util.json(exam));
+
 		//otherwise we send a "201 Created" response and the exam object created
 		res.status(201);
 		res.send(util.json(exam));
@@ -99,11 +90,9 @@ function init(app){
 
 		//if the exam_id isn't a legal id we send a "400 Bad Request" response
 		if(!util.isInteger(exam_id) | exam_id < 0 ){
-
 			//sending response
 			res.status(400).send();
 			util.log(tag, 'Sent "400 Bad Request" response');
-
 			return;
 		}
 
@@ -112,11 +101,9 @@ function init(app){
 
 		//if no exam found in the database sends a "404 Not Found" response
 		if(util.isNull(exam)){
-
 			//sending response
 			res.status(404).send();
 			util.log(tag, 'Sent "404 Not Found" response');
-
 			return;
 		}
 
@@ -138,19 +125,14 @@ function init(app){
 		var exam_id = Number(req.params.exam_id);
 
 		//catching exam update data from the body
-		// var body = JSON.parse(req.body);
-		// var owner_id = body['owner_id'];
-		// var questions = body['questions'];
 		var owner_id = req.body['owner_id'];
 		var questions = req.body['questions'];
 
 		//if the exam_id/owner_id isn't a legal id or questions isn't a valid array, sends a "400 Bad Request" response
 		if(!util.isInteger(exam_id) | exam_id < 0 | !util.isInteger(owner_id) | owner_id < 0 | !util.isArray(questions) | questions.length < 1){
-
 			//sending response
 			res.status(400).send();
 			util.log(tag, 'Sent "400 Bad Request" response');
-
 			return;
 		}
 
@@ -159,11 +141,9 @@ function init(app){
 
 		//if no exam found in the database sends a "404 Not Found" response
 		if(util.isNull(present_exam)){
-
 			//sending response
 			res.status(404).send();
 			util.log(tag, 'Sent "404 Not Found" response');
-
 			return;
 		}
 
@@ -171,8 +151,8 @@ function init(app){
 		//deleting the old exam
 		db.deleteBy(exams_table, 'exam_id', exam_id);
 
-		var exam_update = db.exam(exam_id, owner_id, questions);
 		//inserting the new updated exam
+		var exam_update = db.exam(exam_id, owner_id, questions);
 		db.insert(exams_table, exam_update);
 
 		//logging activity
@@ -181,7 +161,6 @@ function init(app){
 		//sending response and the exam object
 		res.status(200);
 		res.send(util.json(exam_update));
-
 	});
 
 	/*
@@ -195,11 +174,9 @@ function init(app){
 
 		//if the exam_id isn't a legal id, sends a "400 Bad Request" response
 		if(!util.isInteger(exam_id) | exam_id < 0){
-
 			//sending response
 			res.status(400).send();
 			util.log(tag, 'Sent "400 Bad Request" response');
-
 			return;
 		}
 
@@ -215,11 +192,9 @@ function init(app){
 
 		//if hasn't been deleted means the exam wasn't found in the database and sends a "404 Not Found" response
 		if(deleted == false){
-
 			//sending response
 			res.status(404).send();
 			util.log(tag, 'Sent "404 Not Found" response');
-
 			return;
 		}
 
@@ -241,11 +216,9 @@ function init(app){
 
 		//if the exam_id isn't a legal id, sends a "400 Bad Request" response
 		if(!util.isInteger(exam_id) | exam_id < 0){
-
 			//sending response
 			res.status(400).send();
 			util.log(tag, 'Sent "400 Bad Request" response');
-
 			return;
 		}
 
@@ -254,11 +227,9 @@ function init(app){
 
 		//if no exam found sends a "404 Not Found" response
 		if(util.isNull(exam)){
-
 			//sending response
 			res.status(404).send();
 			util.log(tag, 'Sent "404 Not Found" response');
-
 			return;
 		}
 
@@ -266,13 +237,10 @@ function init(app){
 		var submissions = db.findListBy(submissions_table, 'exam_id', exam_id);
 
 		//if no submission found in the database sends a "204 No Content" response
-		//if(util.isNull(submissions) | !util.isArray(submissions)){
 		if(util.isNull(submissions)){
-
 			//sending response
-			res.status(404).send();
-			util.log(tag, 'Sent "404 Not Found" response');
-
+			res.status(204).send();
+			util.log(tag, 'Sent "204 Nn Content" response');
 			return;
 		}
 
@@ -282,15 +250,11 @@ function init(app){
 
 		//builds a user_id:mark objects vector
 		var marks = [];
-		// for(let i = 0; i < submissions.length - 1; i++){
-		// 	obj.user_id = submissions[i].user_id;
-		// 	obj.mark = submissions[i].mark;
-		// 	marks.push(obj);
-		// }
 		submissions.forEach(function(item, index, array){
 			marks.push({'user_id': item.user_id, 'mark': item.mark});
 		});
 
+		//logs activity
 		util.log(tag, 'Sent marks: ' + util.json(marks));
 
 		//sends a "200 OK" response and the mark object vector
@@ -300,7 +264,7 @@ function init(app){
 
 	/*
 		method: GET
-		path: /exams/:owner_id/marks
+		path: /exams/:owner_id/owner
 	*/
 	app.get('/exams/:owner_id/owner', (req, res) => {
 
@@ -309,11 +273,9 @@ function init(app){
 
 		//if the owner_id isn't a legal id, sends a "400 Bad Request" response
 		if(!util.isInteger(owner_id) | owner_id < 0){
-
 			//sending response
 			res.status(400).send();
 			util.log(tag, 'Sent "400 Bad Request" response');
-
 			return;
 		}
 
@@ -322,7 +284,6 @@ function init(app){
 
 		//if no user present sends a "404 Not Found" response
 		if(util.isNull(user)){
-
 			//sending response
 			res.status(404).send();
 			util.log(tag, 'Sent "404 Not Found" response');
@@ -334,7 +295,6 @@ function init(app){
 
 		//if no exams present sends a "204 No content" response
 		if(util.isNull(exams)){
-
 			//sending response
 			res.status(204).send();
 			util.log(tag, 'Sent "204 No content" response');
