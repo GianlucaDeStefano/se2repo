@@ -226,6 +226,8 @@ paths:
             $ref: '#/definitions/ArrayOfMarks'
         204:
           description: 'No submissions for the exam'
+        400:
+          description: 'Bad exam_id'
         401:
           description: 'Unauthorized'
         404:
@@ -247,6 +249,8 @@ paths:
             $ref: '#/definitions/ArrayOfExams'
         204:
           description: 'No exams'
+        400:
+          description: 'Bad owner_id'
         404:
           description: 'Owner not found'
         401:

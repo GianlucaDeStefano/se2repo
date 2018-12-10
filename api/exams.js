@@ -10,7 +10,9 @@ function init(app){
 	const submissions_table = 'submissions';
 	const users_table = 'users';
 
-	//***************** METHODS IMPLEMENTATION *****************
+
+
+	//**************************** METHODS IMPLEMENTATION ****************************
 
 	/*
 		method: GET
@@ -22,7 +24,7 @@ function init(app){
 		var exams = db.getList(exams_table);
 
 		//if no exams present sends a "204 No content" response
-		if(util.isNull(exams)){
+		if(util.isNull(exams) | exams.length == 0){
 			//sending response
 			res.status(204).send();
 			util.log(tag, 'Sent "204 No content" response');
@@ -309,6 +311,7 @@ function init(app){
 		res.send(util.json(exams));
 		util.log(tag, 'Sent "200 OK" response');
 	});
+	//********************************************************************************
 }
 
 module.exports = {init: init};
