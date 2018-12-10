@@ -1,8 +1,7 @@
-var fetch = require('node-fetch');
-
-var host = process.env.BASEURL || 'http://localhost:3000';
-var version = 'V1';
-var path = host;
+const fetch = require('node-fetch');
+const host = process.env.host || 'http://localhost:3000';
+const version = 'V1';
+const path = `${host}/${version}`;
 
 //****************** exams path tests ******************
 

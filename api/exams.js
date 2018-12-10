@@ -1,13 +1,3 @@
-/*
-	/exams path server implementation
-
-	Includes:
-		* [GET - POST] /exams
-*/
-
-//using express as HTTP server
-//var express = require('express');
-
 //importing database and utility functions
 var db = require('./database.js');
 var util = require('./utility');
@@ -18,19 +8,6 @@ function init(app){
 	const exams_table = 'exams';
 	const submissions_table = 'submissions';
 	const users_table = 'users';
-	const version = 'V1';
-
-	//setting public root path
-	//const app = express();
-	//app.use(express.json());
-	//app.use('/' + version + '/', express.static('public'));
-
-	//starting the server
-	var port = process.env.PORT || 3000;
-	app.listen(port, function(){
-		util.log(tag, 'Server running in port: ' + port);
-	});
-
 
 	//***************** METHODS IMPLEMENTATION *****************
 
@@ -38,7 +15,7 @@ function init(app){
 		method: GET
 		path: /exams
 	*/
-	app.get('/exams', function (req, res) {
+	app.get('/exams', (req, res) => {
 
 		//retrieves the entire list of available exams from the database
 		var exams = db.getList(exams_table);
@@ -65,7 +42,7 @@ function init(app){
 		method: POST
 		path: /exams
 	*/
-	app.post('/exams', function (req, res) {
+	app.post('/exams', (req, res) => {
 
 		//getting data from request body
 		// var body = JSON.parse(req.body);
@@ -115,7 +92,7 @@ function init(app){
 		method: GET
 		path: /exams/:exam_id
 	*/
-	app.get('/exams/:exam_id', function (req, res) {
+	app.get('/exams/:exam_id', (req, res) => {
 
 		//catching the exam_id from the request path
 		var exam_id = Number(req.params.exam_id);
@@ -155,7 +132,7 @@ function init(app){
 		method: PATCH
 		path: /exams/:exam_id
 	*/
-	app.patch('/exams/:exam_id', function (req, res) {
+	app.patch('/exams/:exam_id', (req, res) => {
 
 		//catching the exam_id from the request path
 		var exam_id = Number(req.params.exam_id);
@@ -211,7 +188,7 @@ function init(app){
 		method: DELETE
 		path: /exams/:exam_id
 	*/
-	app.delete('/exams/:exam_id', function (req, res) {
+	app.delete('/exams/:exam_id', (req, res) => {
 
 		//catching the exam_id from the request path
 		var exam_id = Number(req.params.exam_id);
@@ -257,7 +234,7 @@ function init(app){
 		method: GET
 		path: /exams/:exam_id/marks
 	*/
-	app.get('/exams/:exam_id/marks', function (req, res) {
+	app.get('/exams/:exam_id/marks', (req, res) => {
 
 		//catching the exam_id from the request path
 		var exam_id = Number(req.params.exam_id);
@@ -325,7 +302,7 @@ function init(app){
 		method: GET
 		path: /exams/:owner_id/marks
 	*/
-	app.get('/exams/:owner_id/owner', function (req, res) {
+	app.get('/exams/:owner_id/owner', (req, res) => {
 
 		//catching the owner_id from the request path
 		var owner_id = Number(req.params.owner_id);
