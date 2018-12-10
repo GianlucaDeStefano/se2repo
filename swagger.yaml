@@ -480,6 +480,21 @@ paths:
           description: 'Error creating group'
           
   /groups/{group_id}:
+    get:
+      summary: 'Get group'
+      description: 'Get the datas of the secelcted group'
+      parameters: 
+        - name: group_id
+          in: path 
+          required: true
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/Group'
+        404:
+          description: 'Group not found'
     patch:
       summary: 'Update a group'
       description: 'Update a group'
@@ -833,10 +848,10 @@ definitions:
         type: integer
       owner_id:
         type: integer
-      exams:
+      exam_ids:
         type: array
         items:
-          $ref: '#/definitions/Exam'
+          $ref: '#/definitions/Id'
       user_ids:
         type: array
         items:
@@ -846,10 +861,10 @@ definitions:
     properties:
       owner_id:
         type: integer
-      exams:
+      exam_ids:
         type: array
         items:
-          $ref: '#/definitions/Exam'
+          $ref: '#/definitions/Id'
       user_ids:
         type: array
         items:
@@ -863,7 +878,7 @@ definitions:
         type: integer
       exam_id:
         type: integer
-      answer:
+      answers:
         type: array
         items:
             $ref: '#/definitions/Answer'
@@ -874,7 +889,7 @@ definitions:
         type: integer
       exam_id:
         type: integer
-      answer:
+      answers:
         type: array
         items:
             $ref: '#/definitions/Answer'
