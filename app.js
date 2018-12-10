@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000
 const reviewApi = require('./api/review.js');
 const submissionApi = require('./api/submission.js');
 const examsApi = require('./api/exams.js');
+const tasksApi = require('./api/tasks.js');
 //const groupApi = require('./api/group.js');
 const userApi = require('./api/user.js');
 
@@ -41,6 +42,7 @@ routerToInit.use(function(req, res, next) {
 reviewApi.init(routerToInit);
 submissionApi.init(routerToInit);
 examsApi.init(routerToInit);
+tasksApi.init(routerToInit);
 //groupApi.init(routerToInit);
 userApi.init(routerToInit);
 
