@@ -18,7 +18,7 @@ function init(app){
 	app.post('/submissions', (req, res) => {
 	   var user_id = req.body["user_id"];
 	   var exam_id = req.body["exam_id"];
-	   var answer = req.body["answer"];
+	   var answer = req.body["answers"];
 	   if (!util.isInteger(user_id) || !util.isInteger(exam_id) || !util.isArray(answer)){
 		   util.log(TAG, "Error: object properties wrong: "+util.json(req.body));
 		   return res.status(400).send();
