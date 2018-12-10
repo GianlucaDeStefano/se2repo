@@ -1,8 +1,7 @@
-fetch = require('node-fetch');
-
-var host = process.env.BASEURL || 'http://localhost:3000';
-var version = 'V1';
-var path = host;
+const fetch = require('node-fetch');
+const host = process.env.host || 'http://localhost:3000';
+const version = 'V1';
+const path = `${host}/${version}`;
 
 //****************** tasks path tests ******************
 
@@ -13,7 +12,7 @@ var path = host;
 */
 test("Test GET /tasks", async () => {
 
-    let response = await fetch('${path}/tasks',{
+    let response = await fetch(path + '/tasks',{
         method: 'GET',
     });
     expect(response.status).toEqual(200);
@@ -46,7 +45,7 @@ test("Test POST /tasks with correct data", async () => {
 		]
 	};
 
-	let response = await fetch('${path}/tasks', {
+	let response = await fetch(path + '/tasks', {
 		method: 'POST',
 		body: JSON.stringify(task),
 		headers: {
@@ -54,10 +53,10 @@ test("Test POST /tasks with correct data", async () => {
 		}
 	});
 
-	expect(response.status).toEqual(200);
+	expect(response.status).toEqual(201);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['id']).toBeDefined();
 });
 
 /*
@@ -73,7 +72,7 @@ test("Test POST /tasks with no tasks", async () => {
 		"text": []
 	};
 
-	let response = await fetch('${path}/tasks', {
+	let response = await fetch(path + '/tasks', {
 		method: 'POST',
 		body: JSON.stringify(task),
 		headers: {
@@ -94,14 +93,14 @@ test("Test GET /tasks/{id} with right id", async () => {
 
 	let id = 1;
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 		method: 'GET'
 	});
 
 	expect(response.status).toBe(200);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['id']).toBeDefined();
 });
 
 /*
@@ -114,7 +113,7 @@ test("Test GET /tasks/{id} with wrong id", async () => {
 
 	let id = 9999;
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 		method: 'GET'
 	});
 
@@ -150,7 +149,7 @@ test("Test GET /tasks/{id} with right id", async () => {
 		]
 	}
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(task_update),
@@ -161,8 +160,8 @@ test("Test GET /tasks/{id} with right id", async () => {
 
 	expect(response.status).toBe(200);
 
-	let obj = JSON.parse(response.text());
-	expect(obj).toIncludeKey('id');
+	let obj = await response.json();
+	expect(obj['id']).toBeDefined();
 });
 
 /*
@@ -194,7 +193,7 @@ test("Test GET /tasks/{id} with right id", async () => {
 		]
 	}
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 
 		method: 'PATCH',
 		body: JSON.stringify(task_update),
@@ -216,7 +215,7 @@ test("Test DELETE /tasks/{id} with right id", async () => {
 
 	let id = 1;
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 		method: 'DELETE',
 	});
 
@@ -233,7 +232,7 @@ test("Test DELETE /tasks/{id} with wrong id", async () => {
 
 	let id = 9999;
 
-	let response = await fetch('${path}/tasks/' + id, {
+	let response = await fetch(path + '/tasks/' + id, {
 		method: 'DELETE',
 	});
 
@@ -250,7 +249,7 @@ test("Test GET /tasks/{id}/marks with right id", async () => {
 
 	let id = 1;
 
-	let response = await fetch('${path}/tasks/' + id + '/marks', {
+	let response = await fetch(path + '/tasks/' + id + '/marks', {
 		method: 'GET'
 	});
 
@@ -268,7 +267,7 @@ test("Test GET /tasks/{id}/marks with wrong id", async () => {
 
 	let id = 9999;
 
-	let response = await fetch('${path}/tasks/' + id + '/marks', {
+	let response = await fetch(path + '/tasks/' + id + '/marks', {
 		method: 'GET'
 	});
 
@@ -286,7 +285,7 @@ test("Test GET /tasks/{owner_id}/owner with right owner_id", async () => {
 
 	let owner_id = 1;
 
-	let response = await fetch('${path}/tasks/' + owner_id + '/owner', {
+	let response = await fetch(path + '/tasks/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 
@@ -304,7 +303,7 @@ test("Test GET /tasks/{owner_id}/owner with wrong owner_id", async () => {
 
 	let owner_id = 9999;
 
-	let response = await fetch('${path}/tasks/' + owner_id + '/owner', {
+	let response = await fetch(path + '/tasks/' + owner_id + '/owner', {
 		method: 'GET'
 	});
 
