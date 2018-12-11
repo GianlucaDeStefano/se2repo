@@ -126,10 +126,9 @@ test("Test GET /tasks/{id} with wrong id", async () => {
 	- valid: yes
 	- description: trying to modify an existing task
 */
-test("Test GET /tasks/{id} with right id", async () => {
+test("Test PATCH /tasks/{id} with right id", async () => {
 
 	let id = 1;
-	//changed right answer from C to Python
 	let task_update = {
 		"owner_id": 30,
 		"text": [
@@ -205,6 +204,42 @@ test("Test GET /tasks/{id} with right id", async () => {
 	expect(response.status).toBe(404);
 });
 
+
+/*
+	- method: GET
+	- path: /tasks/{id}/marks
+	- valid: yes
+	- description: trying to get the annsware of the test 
+*/
+test("Test GET /tasks/{id}/answer with right id", async () => {
+
+	let id = 1;
+
+	let response = await fetch(path + '/tasks/' + id + '/answer', {
+		method: 'GET'
+	});
+
+	expect(response.status).toBe(200);
+
+});
+
+/*
+	- method: GET
+	- path: /tasks/{id}/answer
+	- valid: no
+	- description: trying to get the annsware of the test 
+*/
+test("Test GET /tasks/{id}/answer with wrong id", async () => {
+
+	let id = 9999;
+
+	let response = await fetch(path + '/tasks/' + id + '/answer', {
+		method: 'GET'
+	});
+
+	expect(response.status).toBe(404);
+
+});
 /*
 	- method: DELETE
 	- path: /tasks/{id}
@@ -239,75 +274,4 @@ test("Test DELETE /tasks/{id} with wrong id", async () => {
 	expect(response.status).toBe(404);
 });
 
-/*
-	- method: GET
-	- path: /tasks/{id}/marks
-	- valid: yes
-	- description: trying to get the marks list of a single task
-*/
-test("Test GET /tasks/{id}/marks with right id", async () => {
 
-	let id = 1;
-
-	let response = await fetch(path + '/tasks/' + id + '/marks', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(200);
-
-});
-
-/*
-	- method: GET
-	- path: /tasks/{id}/marks
-	- valid: no
-	- description: trying to get the marks list of a single unexisting task
-*/
-test("Test GET /tasks/{id}/marks with wrong id", async () => {
-
-	let id = 9999;
-
-	let response = await fetch(path + '/tasks/' + id + '/marks', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(404);
-
-});
-
-/*
-	- method: GET
-	- path: /tasks/{owner_id}/owner
-	- valid: yes
-	- description: trying to get the tasks list of a single owner
-*/
-test("Test GET /tasks/{owner_id}/owner with right owner_id", async () => {
-
-	let owner_id = 1;
-
-	let response = await fetch(path + '/tasks/' + owner_id + '/owner', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(200);
-	//should also test when no tasks present
-});
-
-/*
-	- method: GET
-	- path: /tasks/{owner_id}/owner
-	- valid: no
-	- description: trying to get the tasks list of a single unexisting owner
-*/
-test("Test GET /tasks/{owner_id}/owner with wrong owner_id", async () => {
-
-	let owner_id = 9999;
-
-	let response = await fetch(path + '/tasks/' + owner_id + '/owner', {
-		method: 'GET'
-	});
-
-	expect(response.status).toBe(404);
-	//should also test when no tasks present
-});
-//******************************************************

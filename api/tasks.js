@@ -137,7 +137,7 @@ function init(app){
 		method: PATCH
 		path: /tasks/:id
 	*/
-	app.patch('tasks/:id', function (req, res) {
+	app.patch('/tasks/:id', function (req, res) {
 
 		//catching the id from the request path
 		var id = Number(req.params.id);
@@ -155,12 +155,11 @@ function init(app){
 
 			return;
 		}
-
 		//otherwise tries to retrive the task from the database
 		var present_task = db.findBy(tasks_table, 'id', id);
 
 		//if no task found in the database sends a "404 Not Found" response
-		if(util.isNull(task)){
+		if(util.isNull(present_task)){
 
 			//sending response
 			res.status(404).send();
@@ -190,7 +189,7 @@ function init(app){
 		method: DELETE
 		path: /tasks/:id
 	*/
-	app.delete('tasks/:id', function (req, res) {
+	app.delete('/tasks/:id', function (req, res) {
 
 		//catching the id from the request path
 		var id = Number(req.params.id);
@@ -237,7 +236,7 @@ function init(app){
 
 		//catching the id from the request path
 		var id = Number(req.params.id);
-
+		console.log("IIIIIIIIIIIIIID: "+id);
 		//if the id isn't a legal id we send a "400 Bad Request" response
 		if(!util.isInteger(id) | id < 0 ){
 
